@@ -89,6 +89,9 @@ async function main() {
     await page.waitForTimeout(1000);
 
     if (r.name === 'gumdrop-pacman') {
+      // Press Space to dismiss attract start screen and enter READY phase
+      await page.keyboard.press('Space');
+      await page.waitForTimeout(2000);
       await page.keyboard.press('ArrowLeft');
       await page.waitForTimeout(500);
       await page.keyboard.press('ArrowUp');
