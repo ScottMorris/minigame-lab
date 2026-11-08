@@ -124,6 +124,24 @@ class SoundFx {
     osc.start();
     osc.stop(this.ctx.currentTime + 0.16);
   }
+
+  playStart() {
+    this.init();
+    if (!this.ctx) return;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(523.25, this.ctx.currentTime); // C5
+    osc.frequency.setValueAtTime(659.25, this.ctx.currentTime + 0.1); // E5
+    osc.frequency.setValueAtTime(783.99, this.ctx.currentTime + 0.2); // G5
+    osc.frequency.setValueAtTime(1046.5, this.ctx.currentTime + 0.3); // C6
+    gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.45);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start();
+    osc.stop(this.ctx.currentTime + 0.45);
+  }
 }
 
 const sfx = new SoundFx();
@@ -133,18 +151,19 @@ const COLS = 28;
 const MAZE_OFFSET_Y = 40;
 
 // Tile types:
-// 0 = corridor (no gumdrop)
+// 0 = corridor (empty)
 // 1 = solid Citadel wall
 // 2 = gumdrop (+10 pts)
 // 3 = cream soda power can (+50 pts)
 // 4 = ghost pen door / gate
 // 5 = ghost pen interior
+// 6 = cheezie snack (+20 pts)
 const MAZE_TEMPLATE: number[][] = [
   [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
   [1, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 1],
   [1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1],
   [1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1],
-  [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1],
+  [1, 2, 6, 2, 6, 2, 6, 2, 6, 2, 6, 2, 6, 2, 2, 6, 2, 6, 2, 6, 2, 6, 2, 6, 2, 6, 2, 1],
   [1, 2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 2, 1],
   [1, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 1],
   [1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1],
@@ -155,14 +174,14 @@ const MAZE_TEMPLATE: number[][] = [
   [0, 0, 0, 0, 0, 1, 2, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 2, 1, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 1, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 1, 0, 0, 0, 0, 0],
   [1, 1, 1, 1, 1, 1, 2, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1],
-  [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1],
+  [1, 6, 2, 6, 2, 6, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 6, 2, 6, 2, 6, 1],
   [1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1],
   [1, 3, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 3, 1],
   [1, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 1],
   [1, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 1],
   [1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1],
   [1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1],
-  [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1],
+  [1, 6, 2, 6, 2, 6, 2, 6, 2, 6, 2, 6, 2, 2, 2, 2, 6, 2, 6, 2, 6, 2, 6, 2, 6, 2, 6, 1],
   [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 ];
 
@@ -187,6 +206,8 @@ interface FloatingText {
   life: number;
 }
 
+export type GameMode = 'start' | 'ready' | 'playing' | 'dying' | 'wave_clear' | 'gameover';
+
 class GumdropPacmanGame {
   private grid: number[][] = [];
   public score = 0;
@@ -196,23 +217,29 @@ class GumdropPacmanGame {
   public gameOver = false;
   public paused = false;
 
-  // Ben / Player
+  public mode: GameMode = 'start';
+  public readyTimer = 0;
+  public dyingTimer = 0;
+  public dyingAngle = 0;
+  public waveClearTimer = 0;
+
+  // Ben / Player (tuned to authentic deliberate arcade speed)
   private playerX = 13.5 * TILE_SIZE; // 270 (centre of Tile 13)
   private playerY = 17 * TILE_SIZE + TILE_SIZE / 2; // 350 (centre of Row 17)
   private playerDirX = -1;
   private playerDirY = 0;
   private nextDirX = 0;
   private nextDirY = 0;
-  private playerSpeed = 2.0;
+  private playerSpeed = 1.25; // 1.25 px/frame = 75 px/sec = 3.75 tiles/sec
   private mouthAngle = 0.2;
   private mouthDir = 1;
 
-  // Ghosts
+  // Ghosts (proportional arcade pacing)
   private ghosts: Ghost[] = [];
   private powerTimer = 0;
   private ghostsEatenStreak = 0;
 
-  // Bonus Item (Spawns at centre)
+  // Chocolate Bar Bonus Item (Spawns at Citadel centre)
   private bonusItem: {
     x: number;
     y: number;
@@ -224,13 +251,13 @@ class GumdropPacmanGame {
     x: 13.5 * TILE_SIZE,
     y: 13 * TILE_SIZE + TILE_SIZE / 2,
     active: false,
-    type: 'wafer',
+    type: 'chocolate',
     points: 200,
     timer: 0,
   };
 
   private floatingTexts: FloatingText[] = [];
-  private remainingGumdrops = 0;
+  private remainingSnacks = 0;
 
   constructor() {
     this.highScore = Number(localStorage.getItem('minigame_gumdrop_pacman_hi') || '0');
@@ -240,14 +267,14 @@ class GumdropPacmanGame {
 
   private resetMaze() {
     this.grid = [];
-    this.remainingGumdrops = 0;
+    this.remainingSnacks = 0;
     for (let r = 0; r < MAZE_TEMPLATE.length; r++) {
       const row: number[] = [];
       for (let c = 0; c < COLS; c++) {
         const val = MAZE_TEMPLATE[r][c];
         row.push(val);
-        if (val === 2 || val === 3) {
-          this.remainingGumdrops++;
+        if (val === 2 || val === 3 || val === 6) {
+          this.remainingSnacks++;
         }
       }
       this.grid.push(row);
@@ -273,7 +300,7 @@ class GumdropPacmanGame {
         frightened: false,
         state: 'in_maze',
         leaveTimer: 0,
-        speed: 2.0,
+        speed: 1.15,
       },
       {
         name: 'Pinky',
@@ -284,8 +311,8 @@ class GumdropPacmanGame {
         normalColour: EGA.lightMagenta,
         frightened: false,
         state: 'in_house',
-        leaveTimer: 60, // leaves after 1s
-        speed: 1.9,
+        leaveTimer: 80, // ~1.3s
+        speed: 1.1,
       },
       {
         name: 'Inky',
@@ -296,8 +323,8 @@ class GumdropPacmanGame {
         normalColour: EGA.lightCyan,
         frightened: false,
         state: 'in_house',
-        leaveTimer: 180, // leaves after 3s
-        speed: 1.8,
+        leaveTimer: 200, // ~3.3s
+        speed: 1.05,
       },
       {
         name: 'Clyde',
@@ -308,12 +335,21 @@ class GumdropPacmanGame {
         normalColour: EGA.yellow,
         frightened: false,
         state: 'in_house',
-        leaveTimer: 320, // leaves after ~5.3s
-        speed: 1.7,
+        leaveTimer: 340, // ~5.6s
+        speed: 1.0,
       },
     ];
 
     this.powerTimer = 0;
+  }
+
+  public start() {
+    if (this.mode === 'start') {
+      this.mode = 'ready';
+      this.readyTimer = 110;
+      this.resetActors();
+      sfx.playStart();
+    }
   }
 
   public resetGame() {
@@ -323,6 +359,9 @@ class GumdropPacmanGame {
     this.gameOver = false;
     this.resetMaze();
     this.resetActors();
+    this.mode = 'ready';
+    this.readyTimer = 110;
+    sfx.playStart();
   }
 
   public setDesiredDirection(dx: number, dy: number) {
@@ -336,14 +375,62 @@ class GumdropPacmanGame {
     if (tileX < 0 || tileX >= COLS) return true;
 
     const tile = this.grid[tileY][tileX];
-    if (tile === 1) return false; // Wall
+    if (tile === 1) return false; // Solid Wall
     if (tile === 4) return canPassDoor; // Door
     if (tile === 5) return canPassDoor; // Ghost house interior
     return true;
   }
 
   public update() {
-    if (this.paused || this.gameOver) return;
+    if (this.paused) return;
+
+    if (this.mode === 'start') {
+      return; // Waiting for player to press start
+    }
+
+    if (this.mode === 'ready') {
+      this.readyTimer--;
+      if (this.readyTimer <= 0) {
+        this.mode = 'playing';
+      }
+      return;
+    }
+
+    if (this.mode === 'wave_clear') {
+      this.waveClearTimer--;
+      if (this.waveClearTimer <= 0) {
+        this.wave++;
+        this.resetMaze();
+        this.resetActors();
+        this.mode = 'ready';
+        this.readyTimer = 110;
+        sfx.playStart();
+      }
+      return;
+    }
+
+    if (this.mode === 'dying') {
+      this.dyingTimer--;
+      this.dyingAngle += 0.22;
+      if (this.dyingTimer <= 0) {
+        this.lives--;
+        if (this.lives <= 0) {
+          this.mode = 'gameover';
+          this.gameOver = true;
+        } else {
+          this.resetActors();
+          this.mode = 'ready';
+          this.readyTimer = 110;
+        }
+      }
+      return;
+    }
+
+    if (this.mode === 'gameover') {
+      return;
+    }
+
+    // --- Active Playing Mode ---
 
     // Power mode timer countdown
     if (this.powerTimer > 0) {
@@ -355,50 +442,67 @@ class GumdropPacmanGame {
       }
     }
 
-    // Bonus Item Timer
+    // Chocolate Bar Bonus Item Timer
     if (this.bonusItem.active) {
       this.bonusItem.timer--;
       if (this.bonusItem.timer <= 0) {
         this.bonusItem.active = false;
       }
-    } else if (Math.random() < 0.002 && this.remainingGumdrops < 120) {
+    } else if (Math.random() < 0.002 && this.remainingSnacks < 130) {
       this.bonusItem.active = true;
-      this.bonusItem.timer = 400;
-      this.bonusItem.points = 300;
+      this.bonusItem.timer = 420;
+      this.bonusItem.points = 200;
     }
 
     // Mouth animation while moving
     if (this.playerDirX !== 0 || this.playerDirY !== 0) {
-      this.mouthAngle += 0.06 * this.mouthDir;
-      if (this.mouthAngle > 0.45) this.mouthDir = -1;
+      this.mouthAngle += 0.05 * this.mouthDir;
+      if (this.mouthAngle > 0.42) this.mouthDir = -1;
       if (this.mouthAngle < 0.05) this.mouthDir = 1;
     }
 
     // Player Turning & Movement
     this.updatePlayerMovement();
 
-    // Check Tile Collectibles at current position
+    // Check Collectibles at current position
     const curTileX = Math.floor(this.playerX / TILE_SIZE);
     const curTileY = Math.floor(this.playerY / TILE_SIZE);
 
     if (curTileY >= 0 && curTileY < this.grid.length && curTileX >= 0 && curTileX < COLS) {
       const tile = this.grid[curTileY][curTileX];
       if (tile === 2) {
-        // Gumdrop
+        // Gumdrop (+10 pts)
         this.grid[curTileY][curTileX] = 0;
         this.score += 10;
-        this.remainingGumdrops--;
+        this.remainingSnacks--;
         sfx.playChomp();
         if (this.score > this.highScore) {
           this.highScore = this.score;
           localStorage.setItem('minigame_gumdrop_pacman_hi', String(this.highScore));
         }
+      } else if (tile === 6) {
+        // Cheezie (+20 pts)
+        this.grid[curTileY][curTileX] = 0;
+        this.score += 20;
+        this.remainingSnacks--;
+        sfx.playChomp();
+        this.floatingTexts.push({
+          x: curTileX * TILE_SIZE + 10,
+          y: curTileY * TILE_SIZE + 10,
+          text: '+20',
+          colour: EGA.yellow,
+          life: 25,
+        });
+        if (this.score > this.highScore) {
+          this.highScore = this.score;
+          localStorage.setItem('minigame_gumdrop_pacman_hi', String(this.highScore));
+        }
       } else if (tile === 3) {
-        // Cream Soda Power Can
+        // Cream Soda Power Can (+50 pts)
         this.grid[curTileY][curTileX] = 0;
         this.score += 50;
-        this.remainingGumdrops--;
-        this.powerTimer = 450; // ~7.5 seconds
+        this.remainingSnacks--;
+        this.powerTimer = 450; // ~7.5 seconds of fizzy power
         this.ghostsEatenStreak = 0;
         sfx.playPower();
         for (const g of this.ghosts) {
@@ -411,7 +515,7 @@ class GumdropPacmanGame {
       }
     }
 
-    // Check Bonus Item Collision
+    // Check Chocolate Bar Collision
     if (this.bonusItem.active) {
       const dist = Math.hypot(this.playerX - this.bonusItem.x, this.playerY - this.bonusItem.y);
       if (dist < 14) {
@@ -428,11 +532,10 @@ class GumdropPacmanGame {
       }
     }
 
-    // Level Clear condition
-    if (this.remainingGumdrops <= 0) {
-      this.wave++;
-      this.resetMaze();
-      this.resetActors();
+    // Wave Clear condition
+    if (this.remainingSnacks <= 0) {
+      this.mode = 'wave_clear';
+      this.waveClearTimer = 90;
       return;
     }
 
@@ -440,12 +543,11 @@ class GumdropPacmanGame {
     for (const g of this.ghosts) {
       this.updateGhost(g);
 
-      // Collision with Player (only when ghost is roaming in maze)
       if (g.state === 'in_maze') {
         const dist = Math.hypot(this.playerX - g.x, this.playerY - g.y);
         if (dist < 15) {
           if (g.frightened) {
-            // Eat Ghost
+            // Eat Zarg Phantom
             g.state = 'eaten';
             g.frightened = false;
             this.ghostsEatenStreak++;
@@ -460,14 +562,11 @@ class GumdropPacmanGame {
               life: 35,
             });
           } else {
-            // Player Died
+            // Player Caught
+            this.mode = 'dying';
+            this.dyingTimer = 75;
+            this.dyingAngle = 0;
             sfx.playDie();
-            this.lives--;
-            if (this.lives <= 0) {
-              this.gameOver = true;
-            } else {
-              this.resetActors();
-            }
             return;
           }
         }
@@ -542,7 +641,7 @@ class GumdropPacmanGame {
       }
     }
 
-    // 4. Advance in current direction (stopping smoothly at walls)
+    // 4. Advance in current direction (stopping cleanly at walls)
     if (this.playerDirX === -1) {
       if (!this.isPassable(tileX - 1, tileY)) {
         this.playerX = Math.max(centreX, this.playerX - this.playerSpeed);
@@ -583,7 +682,7 @@ class GumdropPacmanGame {
       if (g.leaveTimer <= 0) {
         g.state = 'leaving_house';
       } else {
-        g.y += g.dirY * 0.6;
+        g.y += g.dirY * 0.5;
         if (g.y < 10 * TILE_SIZE + 4) g.dirY = 1;
         if (g.y > 11 * TILE_SIZE + 16) g.dirY = -1;
       }
@@ -594,10 +693,10 @@ class GumdropPacmanGame {
       const exitDoorX = 13.5 * TILE_SIZE; // 270
       const exitTargetY = 8.5 * TILE_SIZE; // 170
       if (Math.abs(g.x - exitDoorX) > 1) {
-        g.x += (exitDoorX > g.x ? 1 : -1) * 1.5;
+        g.x += (exitDoorX > g.x ? 1 : -1) * 1.0;
       } else {
         g.x = exitDoorX;
-        g.y -= 1.5;
+        g.y -= 1.0;
         if (g.y <= exitTargetY) {
           g.y = exitTargetY;
           g.state = 'in_maze';
@@ -618,15 +717,15 @@ class GumdropPacmanGame {
       if (dist < 5) {
         // Entered doorway, move down inside house
         g.x = doorX;
-        g.y += 2.0;
+        g.y += 1.5;
         if (g.y >= 10.5 * TILE_SIZE) {
           g.state = 'leaving_house';
           g.frightened = false;
         }
       } else {
-        // Fast flying eyes to door
-        g.x += (dx / dist) * 3.5;
-        g.y += (dy / dist) * 3.5;
+        // Flying eyeballs back to house
+        g.x += (dx / dist) * 2.6;
+        g.y += (dy / dist) * 2.6;
       }
       return;
     }
@@ -754,7 +853,11 @@ class GumdropPacmanGame {
     ctx.save();
     ctx.translate(0, MAZE_OFFSET_Y);
 
-    // Draw Citadel Maze Walls
+    // Flash maze walls on wave clear
+    const wallColour =
+      this.mode === 'wave_clear' && Math.floor(Date.now() / 150) % 2 === 0 ? EGA.white : EGA.blue;
+
+    // Draw Citadel Maze Walls & Collectibles
     for (let r = 0; r < this.grid.length; r++) {
       for (let c = 0; c < COLS; c++) {
         const tile = this.grid[r][c];
@@ -763,44 +866,75 @@ class GumdropPacmanGame {
 
         if (tile === 1) {
           // Chocolate brick Citadel wall
-          ctx.fillStyle = EGA.blue;
+          ctx.fillStyle = wallColour;
           ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
-          ctx.fillStyle = EGA.lightBlue;
+          ctx.fillStyle = wallColour === EGA.white ? EGA.lightGrey : EGA.lightBlue;
           ctx.fillRect(x + 1, y + 1, TILE_SIZE - 2, 2);
           ctx.fillRect(x + 1, y + 1, 2, TILE_SIZE - 2);
-          ctx.fillStyle = '#000055';
+          ctx.fillStyle = wallColour === EGA.white ? EGA.darkGrey : '#000055';
           ctx.fillRect(x + 3, y + 3, TILE_SIZE - 6, TILE_SIZE - 6);
         } else if (tile === 4) {
           // Ghost Gate (Cyan wafer bar)
           ctx.fillStyle = EGA.lightCyan;
           ctx.fillRect(x, y + 8, TILE_SIZE, 4);
         } else if (tile === 2) {
-          // Glowing Gumdrop pellet
-          ctx.fillStyle = EGA.yellow;
+          // Gumdrop: colourful translucent dot with highlight
+          const dotColours = [
+            EGA.lightRed,
+            EGA.lightGreen,
+            EGA.lightCyan,
+            EGA.lightMagenta,
+            EGA.yellow,
+          ];
+          const col = dotColours[(r * 7 + c) % dotColours.length];
+          ctx.fillStyle = col;
           ctx.beginPath();
           ctx.arc(x + TILE_SIZE / 2, y + TILE_SIZE / 2, 3, 0, Math.PI * 2);
           ctx.fill();
-        } else if (tile === 3) {
-          // Giant Cream Soda Can
-          const pulse = Math.sin(Date.now() / 150) * 1.5;
-          ctx.fillStyle = EGA.lightCyan;
-          ctx.fillRect(x + 4 - pulse / 2, y + 3 - pulse / 2, 12 + pulse, 14 + pulse);
           ctx.fillStyle = EGA.white;
-          ctx.fillRect(x + 6, y + 5, 8, 3);
+          ctx.fillRect(x + TILE_SIZE / 2 - 1, y + TILE_SIZE / 2 - 1, 1, 1);
+        } else if (tile === 6) {
+          // Cheezie: golden crunchy curl snack
+          const dotX = x + TILE_SIZE / 2;
+          const dotY = y + TILE_SIZE / 2;
+          ctx.strokeStyle = EGA.yellow;
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.arc(dotX, dotY, 3.5, 0.4, 2.8);
+          ctx.stroke();
+          ctx.fillStyle = EGA.brown;
+          ctx.fillRect(dotX - 1, dotY, 1, 1);
+        } else if (tile === 3) {
+          // Sparkling Cream Soda Power Can
+          const canX = x + TILE_SIZE / 2;
+          const canY = y + TILE_SIZE / 2;
+          const flash = Math.floor(Date.now() / 150) % 2 === 0;
+          ctx.fillStyle = flash ? EGA.lightCyan : EGA.lightBlue;
+          ctx.fillRect(canX - 5, canY - 7, 10, 14);
+          ctx.fillStyle = EGA.white;
+          ctx.fillRect(canX - 4, canY - 6, 8, 2);
           ctx.fillStyle = EGA.lightRed;
-          ctx.fillRect(x + 6, y + 9, 8, 4);
+          ctx.fillRect(canX - 4, canY - 2, 8, 4);
+          ctx.fillStyle = EGA.yellow;
+          ctx.fillRect(canX - 1, canY - 1, 2, 2);
         }
       }
     }
 
-    // Draw Bonus Confectionery Item
+    // Draw Chocolate Bar Bonus Item
     if (this.bonusItem.active) {
+      ctx.save();
+      ctx.translate(this.bonusItem.x, this.bonusItem.y);
       ctx.fillStyle = EGA.brown;
-      ctx.fillRect(this.bonusItem.x - 8, this.bonusItem.y - 6, 16, 12);
-      ctx.fillStyle = EGA.white;
-      ctx.fillRect(this.bonusItem.x - 6, this.bonusItem.y - 4, 12, 3);
-      ctx.fillStyle = EGA.lightRed;
-      ctx.fillRect(this.bonusItem.x - 6, this.bonusItem.y, 12, 3);
+      ctx.fillRect(-9, -6, 18, 12);
+      ctx.fillStyle = '#3a1f0d';
+      ctx.fillRect(-8, -5, 7, 4);
+      ctx.fillRect(1, -5, 7, 4);
+      ctx.fillRect(-8, 1, 7, 4);
+      ctx.fillRect(1, 1, 7, 4);
+      ctx.fillStyle = EGA.lightGrey; // silver foil
+      ctx.fillRect(-9, 3, 18, 3);
+      ctx.restore();
     }
 
     // Draw Ben (Pac-Man)
@@ -819,18 +953,28 @@ class GumdropPacmanGame {
       ctx.fillText(ft.text, ft.x, ft.y);
     }
 
+    // Draw "READY!" banner during ready mode
+    if (this.mode === 'ready') {
+      ctx.font = 'bold 20px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = EGA.yellow;
+      ctx.fillText('READY!', canvas.width / 2, 13 * TILE_SIZE + 10);
+    }
+
     ctx.restore();
 
     // Draw Top & Bottom HUD
     this.drawHUD();
 
-    // Pause / Game Over overlays
+    // Overlays
     if (this.paused) {
       this.drawOverlay('GAME PAUSED', 'PRESS P TO RESUME', EGA.yellow);
-    } else if (this.gameOver) {
+    } else if (this.mode === 'start') {
+      this.drawAttractScreen();
+    } else if (this.mode === 'gameover') {
       this.drawOverlay(
         'GAME OVER',
-        `SCORE: ${this.score}\nPRESS SPACE TO PLAY AGAIN`,
+        `FINAL SCORE: ${this.score}\n\nPRESS SPACE TO PLAY AGAIN`,
         EGA.lightRed,
       );
     }
@@ -840,13 +984,18 @@ class GumdropPacmanGame {
     ctx.save();
     ctx.translate(this.playerX, this.playerY);
 
-    let angle = 0;
-    if (this.playerDirX === 1) angle = 0;
-    else if (this.playerDirX === -1) angle = Math.PI;
-    else if (this.playerDirY === 1) angle = Math.PI / 2;
-    else if (this.playerDirY === -1) angle = -Math.PI / 2;
-
-    ctx.rotate(angle);
+    if (this.mode === 'dying') {
+      ctx.rotate(this.dyingAngle);
+      const scale = Math.max(0.08, this.dyingTimer / 75);
+      ctx.scale(scale, scale);
+    } else {
+      let angle = 0;
+      if (this.playerDirX === 1) angle = 0;
+      else if (this.playerDirX === -1) angle = Math.PI;
+      else if (this.playerDirY === 1) angle = Math.PI / 2;
+      else if (this.playerDirY === -1) angle = -Math.PI / 2;
+      ctx.rotate(angle);
+    }
 
     // Ben's Golden Astronaut Helmet / Pac-Mouth
     ctx.fillStyle = EGA.yellow;
@@ -858,8 +1007,14 @@ class GumdropPacmanGame {
 
     // Helmet rim
     ctx.strokeStyle = EGA.brown;
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.arc(0, 0, 9, this.mouthAngle, Math.PI * 2 - this.mouthAngle);
     ctx.stroke();
+
+    // Astronaut Visor Gleam
+    ctx.fillStyle = EGA.white;
+    ctx.fillRect(1, -5, 2, 2);
 
     ctx.restore();
   }
@@ -869,34 +1024,37 @@ class GumdropPacmanGame {
     ctx.translate(g.x, g.y);
 
     if (g.state === 'eaten') {
-      // Floating eyeballs returning home
+      // Disembodied floating eyeballs flying to pen
       ctx.fillStyle = EGA.white;
-      ctx.fillRect(-6, -4, 5, 6);
-      ctx.fillRect(2, -4, 5, 6);
+      ctx.fillRect(-5, -3, 4, 6);
+      ctx.fillRect(1, -3, 4, 6);
       ctx.fillStyle = EGA.blue;
-      ctx.fillRect(-5, -2, 3, 3);
-      ctx.fillRect(3, -2, 3, 3);
+      ctx.fillRect(-4, -1, 2, 3);
+      ctx.fillRect(2, -1, 2, 3);
       ctx.restore();
       return;
     }
 
-    // Ghost body colour
+    // Body Colour
     let bodyCol = g.normalColour;
     if (g.frightened) {
-      // Flashing white when power mode is expiring (<120 ticks)
-      bodyCol =
-        this.powerTimer < 120 && Math.floor(Date.now() / 150) % 2 === 0 ? EGA.white : EGA.blue;
+      bodyCol = EGA.lightBlue;
+      if (this.powerTimer < 120 && Math.floor(Date.now() / 150) % 2 === 0) {
+        bodyCol = EGA.white;
+      }
     }
 
+    // Dome Head
     ctx.fillStyle = bodyCol;
     ctx.beginPath();
     ctx.arc(0, -2, 9, Math.PI, 0);
     ctx.lineTo(9, 8);
-    // Wobbly tentacle feet
-    const wobble = Math.sin(Date.now() / 100) * 2;
-    ctx.lineTo(5, 5 + wobble);
-    ctx.lineTo(0, 8);
-    ctx.lineTo(-5, 5 - wobble);
+    // Wavy ghost skirt
+    ctx.lineTo(6, 5);
+    ctx.lineTo(3, 8);
+    ctx.lineTo(0, 5);
+    ctx.lineTo(-3, 8);
+    ctx.lineTo(-6, 5);
     ctx.lineTo(-9, 8);
     ctx.closePath();
     ctx.fill();
@@ -961,7 +1119,120 @@ class GumdropPacmanGame {
 
     ctx.textAlign = 'right';
     ctx.fillStyle = EGA.lightGrey;
-    ctx.fillText(`GUMS: ${this.remainingGumdrops}`, canvas.width - 20, canvas.height - 15);
+    ctx.fillText(`SNACKS: ${this.remainingSnacks}`, canvas.width - 20, canvas.height - 15);
+  }
+
+  private drawAttractScreen() {
+    ctx.fillStyle = 'rgba(6, 4, 10, 0.88)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title Header
+    ctx.textAlign = 'center';
+    ctx.fillStyle = EGA.yellow;
+    ctx.font = 'bold 12px monospace';
+    ctx.fillText('★ RETRO ARCADE CLASSIC ★', canvas.width / 2, 70);
+
+    ctx.fillStyle = EGA.lightMagenta;
+    ctx.font = 'bold 28px monospace';
+    ctx.fillText('GUMDROP PAC-MAN', canvas.width / 2, 105);
+
+    ctx.fillStyle = EGA.lightCyan;
+    ctx.font = 'bold 13px monospace';
+    ctx.fillText("MILDRED'S CITADEL SNACK RUN", canvas.width / 2, 128);
+
+    // Zarg Phantoms Cast
+    const startY = 170;
+    const ghostCast = [
+      { name: 'BLINKY', desc: '"SHADOW" — ZARG COMMANDER', col: EGA.lightRed },
+      { name: 'PINKY', desc: '"SPEEDY" — CITADEL SCOUT', col: EGA.lightMagenta },
+      { name: 'INKY', desc: '"BASHFUL" — CAVERN PHANTOM', col: EGA.lightCyan },
+      { name: 'CLYDE', desc: '"POKEY" — GUMDROP LURKER', col: EGA.yellow },
+    ];
+
+    ghostCast.forEach((g, i) => {
+      const gy = startY + i * 36;
+      // Mini ghost icon
+      ctx.fillStyle = g.col;
+      ctx.beginPath();
+      ctx.arc(70, gy - 2, 8, Math.PI, 0);
+      ctx.lineTo(78, gy + 7);
+      ctx.lineTo(75, gy + 4);
+      ctx.lineTo(72, gy + 7);
+      ctx.lineTo(68, gy + 4);
+      ctx.lineTo(65, gy + 7);
+      ctx.lineTo(62, gy + 7);
+      ctx.closePath();
+      ctx.fill();
+
+      // Mini eyes
+      ctx.fillStyle = EGA.white;
+      ctx.fillRect(66, gy - 4, 3, 4);
+      ctx.fillRect(72, gy - 4, 3, 4);
+      ctx.fillStyle = EGA.blue;
+      ctx.fillRect(66, gy - 3, 2, 2);
+      ctx.fillRect(72, gy - 3, 2, 2);
+
+      // Label
+      ctx.textAlign = 'left';
+      ctx.font = 'bold 13px monospace';
+      ctx.fillStyle = g.col;
+      ctx.fillText(g.name, 95, gy + 3);
+      ctx.fillStyle = EGA.lightGrey;
+      ctx.font = '11px monospace';
+      ctx.fillText(g.desc, 165, gy + 3);
+    });
+
+    // Snack Scoring Table
+    const snackY = 330;
+    ctx.strokeStyle = EGA.darkGrey;
+    ctx.strokeRect(40, snackY, canvas.width - 80, 110);
+    ctx.fillStyle = '#0f0c18';
+    ctx.fillRect(41, snackY + 1, canvas.width - 82, 108);
+
+    ctx.textAlign = 'center';
+    ctx.fillStyle = EGA.lightCyan;
+    ctx.font = 'bold 12px monospace';
+    ctx.fillText('CITADEL SNACK VALUES', canvas.width / 2, snackY + 22);
+
+    ctx.textAlign = 'left';
+    ctx.font = '12px monospace';
+
+    // Gumdrop
+    ctx.fillStyle = EGA.lightGreen;
+    ctx.beginPath();
+    ctx.arc(70, snackY + 45, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = EGA.white;
+    ctx.fillText('GUMDROP: 10 PTS', 88, snackY + 49);
+
+    // Cheezie
+    ctx.strokeStyle = EGA.yellow;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.arc(70, snackY + 70, 4, 0.4, 2.8);
+    ctx.stroke();
+    ctx.fillStyle = EGA.white;
+    ctx.fillText('CHEEZIE: 20 PTS', 88, snackY + 74);
+
+    // Cream Soda Can
+    ctx.fillStyle = EGA.lightCyan;
+    ctx.fillRect(300, snackY + 38, 8, 12);
+    ctx.fillStyle = EGA.white;
+    ctx.fillText('CREAM SODA CAN: 50 PTS (STUNS ZARGS)', 320, snackY + 49);
+
+    // Chocolate Bar
+    ctx.fillStyle = EGA.brown;
+    ctx.fillRect(300, snackY + 63, 12, 8);
+    ctx.fillStyle = EGA.white;
+    ctx.fillText('CHOCOLATE BAR: 200 PTS', 320, snackY + 74);
+
+    // Press Space / Arrow Key Prompt (Flashing)
+    if (Math.floor(Date.now() / 450) % 2 === 0) {
+      ctx.textAlign = 'center';
+      ctx.font = 'bold 15px monospace';
+      ctx.fillStyle = EGA.yellow;
+      ctx.fillText('PRESS SPACE OR ARROW TO START', canvas.width / 2, 480);
+    }
   }
 
   private drawOverlay(title: string, sub: string, colour: string) {
@@ -986,6 +1257,29 @@ const game = new GumdropPacmanGame();
 
 window.addEventListener('keydown', (e) => {
   const k = e.key.toLowerCase();
+
+  // If in start / attract screen, any movement or action key begins the game
+  if (game.mode === 'start') {
+    if (
+      [
+        'arrowup',
+        'arrowdown',
+        'arrowleft',
+        'arrowright',
+        'w',
+        'a',
+        's',
+        'd',
+        ' ',
+        'enter',
+      ].includes(k)
+    ) {
+      game.start();
+      e.preventDefault();
+      return;
+    }
+  }
+
   if (k === 'arrowup' || k === 'w') {
     game.setDesiredDirection(0, -1);
     e.preventDefault();
@@ -1001,7 +1295,7 @@ window.addEventListener('keydown', (e) => {
   } else if (k === 'p') {
     game.paused = !game.paused;
     e.preventDefault();
-  } else if (k === ' ' && game.gameOver) {
+  } else if (k === ' ' && game.mode === 'gameover') {
     game.resetGame();
     e.preventDefault();
   }
