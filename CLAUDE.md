@@ -1,52 +1,52 @@
 # CLAUDE.md
 
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 ## Project
 
-Lieutenant Fizz 2 is the start of Episode 2 (and the simulation Episode 3 reuses), with Web and DOS developed in parallel. `fizz-sim` is the deterministic rules foundation: `no_std`, no `unsafe`, no platform types. The Milestone 0 platform skeleton and the Milestone 1 slice are built: the slice's state hash is identical on native, Web (WASM) and DOS (headless DOSBox). A baker and the real rules and scene arrive with their first consumers.
-
-`AGENTS.md` is authoritative. Its essential rules are Canadian English everywhere, unwrapped markdown, author-facing prose, Conventional Commits but no prefixes in PR titles, merge commits only, no push without instruction, explicit staging, and copyright/SPDX headers on source files.
-
-The first commit is titled `Initial Commit`; later commits use Conventional Commits. Do not install system packages to make a build pass. `tools/check.sh` is the pre-PR gate.
-
-## Where things come from
-
-- Fizz 1 (`~/source/liminal-hq/lieutenant-fizz`, docs in `docs/GAME_DESIGN.md`, `STORY.md`, `SERIES.md`) is the behaviour reference. Its DOS port lives in `~/source/experiments/fizz-dos`.
-- Desk (`~/source/liminal-hq/desk`) is the Rust-on-DOS reference. Mirror its ideas here for now and swap in the real crates later.
-- `docs/POC-1-FINDINGS.md` records what the earlier proof of concept (`~/source/experiments/fizz-2-dos-poc1`, tag `poc-1`) settled and what it did not.
-- The level and overworld authoring format is a level script language, proved on Fizz 1's levels in an earlier experiment.
+Mini Game Lab (`ScottMorris/minigame-lab`) is a monorepo featuring six retro arcade mini-games (*Fizz Invaders*, *Gloop Slugger*, *Cocoa Drop*, *Pogo Panic*, *Gumdrop Pacman*, and *Crystal Defender*) powered by the Lieutenant Fizz 2 engine core (`fizz-sim`, `fizz-phys`, and `fizz-view`). Deterministic `#![no_std]` Rust simulation crates compile to WebAssembly, paired with Vite-bundled Canvas 2D Web presentations and Undertone audio (`@liminal-hq/undertone`), linked through an interactive CRT arcade Hub (`games/hub`) deployed to GitHub Pages. See `AGENTS.md` for authoritative conventions.
 
 ## Layout
 
-- `crates/fizz-sim`: the deterministic rules foundation (fixed tick, state hash, input types)
-- `crates/fizz-phys`: Fizz 1's tile map, body, platform and rng code as an owned `no_std` copy
-- `crates/fizz-ep2`: the slice's rules and level, and the golden transcript `slice-replay.txt`
-- `crates/fizz-script`: the level script dialect's parser, lossless tree, canonical printer and validator (`docs/SCRIPT.md`), host-only `std`
-- `crates/fizz-hal`: Desk-shaped hardware abstraction traits (clock, input, display, interrupt ring)
-- `crates/fizz-present-dos`: the DOS frame, palette, font and key mapping
-- `crates/fizz-present-web`: the `wasm-bindgen` Web presenter
-- `dos/`: its own workspace (custom target, `-Zbuild-std`): `rt` (the runtime), `rtsmoke`, `fizz2` (FIZZ2.EXE)
-- `web/`: the static page for the Web presenter
-- `docs/`: architecture, the platform skeleton reference, the proof-of-concept findings, the scene contract sketch
-- `assets/`: the animated README hero, hand-authored in the 16-colour EGA palette
-- `tools/`: `check.sh` (the pre-PR gate), the DOS and Web build scripts, `check-dos.sh` and `check-parity.sh`
-- `tools/progress-report/`: the generator of the progress archive (Gregory's chapters, the figure registry, captures in `media/`); its prose follows `tools/progress-report/VOICE.md`
+Bun workspaces + Cargo workspace:
+
+- `crates/fizz-sim`, `crates/fizz-phys`, `crates/fizz-view` — core deterministic engine crates
+- `crates/<game-crates>` — simulation rules crates for each individual mini-game
+- `games/hub` — retro arcade Hub interface and navigation launcher
+- `games/<game-frontends>` — Canvas 2D web frontends bundled with Vite and Undertone audio
+- `assets/` — animated 16-colour EGA hero banner (`assets/hero.svg`)
+- `docs/` — architecture documentation and individual game specifications (`docs/specs/`)
+- `scripts/` — build and collation scripts (`build-wasm.sh`, `build-site.sh`)
 
 ## Commands
 
 ```bash
-tools/check.sh                                   # host gate, run before every PR
-cargo run -p fizz-ep2 --example replay            # native transcript
-tools/setup-dos.sh                               # links vendor/ from $DOS_TOOLCHAIN when absent
-tools/check-dos.sh                               # build FIZZ2.EXE and check it in headless DOSBox (full gate; --groups base,audio for a part, --list names them)
-tools/ci-scope.sh                                # which check groups this branch's paths need (CI runs these on a PR, everything on main)
-tools/build-web.sh                               # build dist/web (needs the pinned wasm-bindgen CLI)
-tools/check-parity.sh                            # native, Web and DOS transcripts must match: PARITY ok <hash>
-tools/preview-site.sh --serve                    # local preview: landing page, Web build and js-dos DOS modes on http://127.0.0.1:8080/ (for looking, not pinning)
-python3 tools/progress-report/build.py --check   # build and check the progress archive in dist/progress-report (--offline: gh snapshot)
-python3 tools/progress-report/gather.py --update-snapshot   # refresh the archive's committed gh snapshot
-python3 tools/progress-report/capture.py         # refresh the archive's DOSBox and Chromium screenshots
+bun install          # install web dependencies across workspaces
+bun run dev          # run local Vite dev server
+bun run build        # compile WASM and bundle production site into dist/
+bun run lint         # ESLint across all TypeScript packages
+bun run format:check # check Prettier formatting
+bun run typecheck    # TypeScript type checks across all web packages
+bun run test:rust    # run cargo test --workspace (102 tests)
+bun run lint:rust    # run cargo clippy --workspace --all-targets -- -D warnings
+bun run validate     # full pre-PR gate (runs format, lint, typecheck, clippy, tests, build)
 ```
 
-The DOS toolchain is the shared `ci-dos` image pinned by digest; locally `vendor/` is a git-ignored copy of its toolchain layout. Rules crates keep the numeric model in `docs/PLATFORM.md`: `f64`, basic IEEE operations, no `exp` family, the x87 control word set by the program. `fizz-hal`, `fizz-present-dos` and `fizz-dos-rt` deny float arithmetic. Document every new build or emulator check in `docs/PLATFORM.md`. Do not add C or DJGPP glue by default.
+`bun run validate` is the authoritative pre-PR gate. Use Bun, never npm, pnpm, or yarn.
 
-The player's manual, `docs/MANUAL.md`, is written in parallel with the game: a change a player can see or do updates it in the same PR (see "Game Manual" in `AGENTS.md`).
+## Architecture — the key things to understand
+
+**The Rust crates own simulation; TypeScript owns presentation.** Deterministic game rules (entity physics, collision, projectile updates, scoring) live in `#![no_std]` Rust crates under `crates/` with fixed ticks and seeded PRNG. TypeScript views render sprites to Canvas 2D using the 16-colour EGA palette, trigger sound effects with `@liminal-hq/undertone`, and react to simulation state; they never re-derive simulation logic.
+
+**Arcade Hub integration.** The Hub (`games/hub`) links to all mini-games with relative paths (`./games/<game>/`), and each game view provides reciprocal navigation via a styled `← Hub` button linking back to `./`. The production build scripts collate all workspaces into `./dist/` with a `.nojekyll` marker for GitHub Pages.
+
+## Conventions (from AGENTS.md)
+
+- **PR titles**: human-readable summary, imperative mood, sentence case, ~70 chars, no Conventional Commit prefix.
+- **PR descriptions**: `## Summary` with flat bullets and **bold** lead-ins (`- **What changed:** ...`, `- **Why:** ...`), `### Documentation` subsection, and `## Test plan` checklist (`- [x]`) with commands run and `Not verified:`.
+- **PR labels**: primary category label (`enhancement`, `bug`, etc.) plus relevant scope labels (`sim`, `web`, `rust`, `ci`, `graphics`, `ui`, `pages`).
+- **Commits**: Conventional Commits with hard-wrapped markdown bodies explaining what and why. Stage exact paths with `git add <path>`, never `-A` or `-a`. End with the `Co-Authored-By:` trailer.
+- **Merging**: merge commits only (never squash or rebase-merge), and only after explicit user instruction.
+- **Licence headers**: summary line + `(c) Copyright 2026 Liminal HQ, Scott Morris` + `SPDX-License-Identifier: Apache-2.0 OR MIT` on source files.
+- **Prose**: Canadian English spelling (`colour`, `behaviour`, `licence`, `artefact`); unwrapped markdown paragraphs; real em dashes (`—`), never `--`.
+- **Authoring voice**: outward-facing lines state facts directly without referencing "this PR", reviews, or commit SHAs.

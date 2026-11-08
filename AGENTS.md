@@ -1,79 +1,176 @@
 # AGENTS.md
 
+## Table of Contents
+
+- [Repository Metadata](#repository-metadata)
+- [Project Status](#project-status)
+- [Source of Truth](#source-of-truth)
+- [Localization and Spelling](#localization-and-spelling)
+- [Markdown Formatting](#markdown-formatting)
+- [Authoring Voice](#authoring-voice)
+- [Commit Messages](#commit-messages)
+- [Pull Request Titles](#pull-request-titles)
+- [Pull Request Content](#pull-request-content)
+- [Pull Request Labels](#pull-request-labels)
+- [Git Workflow](#git-workflow)
+- [Local Tooling](#local-tooling)
+- [Architecture Rules](#architecture-rules)
+- [Testing and CI](#testing-and-ci)
+- [Documentation](#documentation)
+- [Repository Layout](#repository-layout)
+- [Licence and Copyright](#licence-and-copyright)
+- [Agent Behaviour](#agent-behaviour)
+
+## Repository Metadata
+
+Applied to the GitHub repository `ScottMorris/minigame-lab`.
+
+- **Description:** Six retro arcade mini-games and an interactive arcade Hub built on the Lieutenant Fizz 2 engine core.
+- **Topics:** `arcade`, `minigames`, `lieutenant-fizz`, `rust`, `wasm`, `bun`, `vite`, `canvas`, `retro-gaming`, `liminal-hq`
+
 ## Project Status
 
-Lieutenant Fizz 2 is the start of Lieutenant Fizz — Episode 2, built so Episode 3 can reuse the same simulation. It is one game with two first-class presentations, Web and DOS, developed in parallel. Fizz 1 (`liminal-hq/lieutenant-fizz`) is the original: a working multiplatform prototype that Fizz 2 learns from and does not change. Desk (`liminal-hq/desk`) is the Rust-on-DOS foundation; its ideas are mirrored here for now and swapped for the real crates later.
-
-The repository was seeded from the findings of an earlier proof of concept, `fizz-2-dos-poc1` (tag `poc-1`). Those findings are recorded in `docs/POC-1-FINDINGS.md`. No proof-of-concept code is carried over except by deliberate, documented decision.
+Mini Game Lab is a monorepo featuring six retro arcade mini-games (*Fizz Invaders*, *Gloop Slugger*, *Cocoa Drop*, *Pogo Panic*, *Gumdrop Pacman*, and *Crystal Defender*) powered by the shared Lieutenant Fizz 2 engine core (`fizz-sim`, `fizz-phys`, and `fizz-view`). Each game pairs a deterministic `#![no_std]` Rust simulation compiled to WebAssembly with a TypeScript presentation layer using Canvas 2D and `@liminal-hq/undertone` audio. The games are unified by an interactive retro CRT arcade Hub (`games/hub`) bundled with Vite and deployed to GitHub Pages.
 
 ## Source of Truth
 
-- `docs/ARCHITECTURE.md` defines the layers, the crate plan and the Web and DOS parity policy.
-- `README.md` defines the repository entry point and what currently works.
-- Code is the source of truth once it exists. Update the corresponding document in the same branch when a behaviour or architecture decision changes.
-- Fizz 1 and Desk are references for proven techniques, not code to copy without a documented decision. When Fizz 2 reproduces a Fizz 1 behaviour, it names the Fizz 1 source and proves the match with a test.
+- `docs/specs/*.md` are the game specifications defining rules, scoring, and entity behaviours.
+- `docs/ARCHITECTURE.md` defines the architectural layers, monorepo workspaces, and shared simulation contracts.
+- `README.md` defines the repository entry point, game showcase, and developer workflows.
+- If code and documentation disagree, resolve it deliberately: update the code to match the spec, or update the specification in the same branch with the design rationale.
 
-## Localization and Markdown
+## Localization and Spelling
 
-All UI strings, identifiers, comments, commit messages, pull request descriptions and documentation use Canadian English except exact external spellings. Use `colour`, `centre`, `behaviour`, `cancelled`, and `licence` (noun). Do not hard-wrap markdown prose; each paragraph and bullet is one source line. Use a real em dash in prose, never `--` as a substitute.
+**REQUIREMENT:** All UI strings, code identifiers, comments, commit messages, pull request descriptions, and documentation MUST use **Canadian English** spelling.
+
+Examples:
+
+- `colour` instead of `color`
+- `centre` instead of `center`
+- `neighbour` instead of `neighbor`
+- `behaviour` instead of `behavior`
+- `cancelled` instead of `canceled`
+- `customise` instead of `customize`, `minimise` instead of `minimize`
+- `licence` (noun) vs `license` (verb)
+- `artefact` instead of `artifact`
+
+Keep external or technical spellings where a third-party API, CSS property, crate name, or protocol strictly requires them (for example `color` in CSS, `Float32Array`, or the SPDX `license` identifier).
+
+## Markdown Formatting
+
+**REQUIREMENT:** Do not hard-wrap markdown prose. Write each paragraph or bullet as a single unwrapped line in the source, no matter how long, and let the renderer reflow it. This applies to markdown-rendered content: PR descriptions, documentation under `docs/`, `README.md`, and issue descriptions. Commit message bodies are the one exception: hard-wrap those (see [Commit Messages](#commit-messages)).
+
+- Manual line breaks mid-paragraph create noisy diffs when small edits reflow entire paragraphs.
+- This rule does not apply to separate list items, headings, or intentional line breaks.
+- Code comments are not markdown-rendered and may wrap normally at a reasonable line length.
+
+**Em dashes:** Use a real em dash (`—`) in prose, never `--` as a substitute. This applies across all prose (PR descriptions, documentation, README files, commit messages, and comments). Do not replace CLI flags (such as `--check`) or numeric ranges.
 
 ## Authoring Voice
 
-Write code comments, documentation and pull request prose as the author of the artefact, for a later reader. State facts and reasoning directly; do not mention reviews, reviewers, conversation history or commit hashes. Commit messages and PR test plans may record debugging context and measurements.
+**REQUIREMENT:** Ship the result, not how the conversation arrived at it. Write every outward-facing line — code comments, identifier names, documentation, PR descriptions — as the author of the artefact, for the reader who will encounter it later.
 
-The progress archive in `tools/progress-report/` follows `tools/progress-report/VOICE.md`, and its tests refuse the phrases that guide lists.
+- Do not reference "this PR", "the review", a reviewer's name, or a commit SHA inside code comments or PR prose. State facts and reasoning directly, as if they had always been true.
+- When comments are updated across iterations, rewrite them into a single clean explanation.
+- Commit messages are the legitimate place to record why a change occurred, including debugging context.
+
+## Commit Messages
+
+**Format:** Use Conventional Commits (`feat:`, `fix:`, `docs:`, `test:`, `build:`, `ci:`, `chore:`).
+
+- Use `test:` for test-related changes, including fixes to tests themselves (do not use `fix:` unless fixing application logic).
+- Every commit body explains what and why, with bold labels or flat bullets and every code-level reference in backticks.
+- Hard-wrap commit bodies at roughly 72 to 100 characters.
+- Write commit messages to a file and commit with `git commit -F` when backticks or multi-line prose are present.
+- End every commit that an AI model helped write with a `Co-Authored-By:` trailer naming the model and its author address.
+
+## Pull Request Titles
+
+**REQUIREMENT:** A PR title is a human-readable summary of the change, never a Conventional Commit.
+
+- Start with a capital letter, write in the imperative mood, and keep to roughly 70 characters.
+- No `feat:`, `fix:`, or `chore:` prefixes.
+- Describe the outcome, not the process.
+- Keep the title style consistent across pull requests in a stack.
+
+## Pull Request Content
+
+**REQUIREMENT:** Use outcome-focused language and leave out internal conversation history or workflow artefacts. Open PRs ready for review unless explicitly asked for a draft.
+
+- Use `## Summary` with flat bullets that have **bold** lead-ins:
+  - `- **What changed:** ...`
+  - `- **Why:** ...`
+- Include a `### Documentation` subsection:
+  - `- Docs updated (`docs/`, `AGENTS.md`, `README.md`), or not needed: ...`
+- Use `## Test plan` as a checklist (`- [x]` / `- [ ]`) with the exact commands run.
+- If anything was not verified or could not be exercised headlessly, state it plainly at the end under `Not verified:`.
+- `.github/pull_request_template.md` defines the authoritative template.
+
+## Pull Request Labels
+
+**REQUIREMENT:** Add labels to every PR when it is created or updated.
+
+- **Primary category** (at least one): `enhancement`, `bug`, `documentation`, `testing`, `ci`, `build`, or `chore`. Do not use `feat` or `fix`.
+- **Shared operational labels:** `infrastructure`, `internal`, `release`, `blocked`, `skip-changelog`.
+- **Scope labels:** technology (`rust`, `web`, `sim`, `wasm`), components (`ui`, `graphics`, `sound`, `input`, `levels`, `pages`, `performance`).
+- `skip-changelog` excludes a change from GitHub's generated release notes (configured in `.github/release.yml`).
 
 ## Git Workflow
 
-Do not push, force-push, merge or alter shared settings without explicit user instruction. Use merge commits only; never squash or rebase-merge. Name branches `feat/<short-description>`, `docs/<short-description>`, `chore/<short-description>`, or `fix/issue-<number>-<short-description>`. Stage exact paths with `git add <path>`; never use `git add -A` or `git commit -a`. Do not commit build products, `target/`, `out/`, `dist/`, or `vendor/`.
+**REQUIREMENT:** Never push, force-push, tag, or merge without explicit user instruction. The default branch is `main`; never commit directly to it.
 
-Use Conventional Commits. The repository's first commit is the sole exception, titled `Initial Commit`. Commit bodies explain what and why, hard-wrap at about 72–100 columns, backtick every code-level reference, and end with the agent co-author trailer when an agent authored the commit. Write markdown-heavy messages to a file and use `git commit -F`; inspect the result with `git log -1 --pretty=fuller`.
+- Work on descriptive topic branches: `feat/<short-description>`, `fix/<short-description>`, `docs/<short-description>`, or `chore/<short-description>`.
+- Use merge commits only; never squash or rebase-merge.
+- Stage specific paths with `git add <path>`; never use `git add -A` or `git commit -a`.
+- Do not commit build artefacts (`dist/`, `target/`, `node_modules/`).
+- Use the `gh` CLI for pull requests, labels, and Actions runs.
 
-PR titles start with a capital letter, use the imperative mood, remain near 70 characters, and have no Conventional Commit prefix. PRs use `## Summary` followed by `## Test plan`, have a category label (`enhancement`, `bug`, `documentation`, `testing`, `ci`, `build`, or `chore`) and relevant scope labels (`sim`, `web`, `dos`, `graphics`, `input`, `sound`, `levels`, `rust`, `performance`, `experimental`, `ui`, `design-docs`, `pages`, `deploy`, `parity`).
+## Local Tooling
 
-## Local Tooling and Releases
+- **Bun:** Bun 1.3+ is the JavaScript runtime, package manager, and test runner. Use `bun`, never npm, pnpm, or yarn.
+- **Rust:** Rust is pinned in `rust-toolchain.toml` with the `wasm32-unknown-unknown` target.
+- **Pre-PR gate:** `bun run validate` is the authoritative local gate, running Prettier, ESLint, TypeScript type checks, Rust formatting, Clippy, workspace tests, and site assembly.
 
-Rust is pinned in `rust-toolchain.toml`; DOS builds use `RUSTC_BOOTSTRAP=1` only for the documented `-Zbuild-std` and target-specification steps. The scripts are the source of truth for exact commands. Do not install system packages to get a build working without asking. Use `$TMPDIR`-style scratch paths when jobs share a machine. The CI image for DOS work is the `ci-dos` tier of `ghcr.io/liminal-hq/ci-dos`, pinned by digest; tool-version changes belong in the shared image repository.
+## Architecture Rules
 
-Every PR adds its line to `WORKLOG.md`, in landing order. A release adds its version section to `CHANGELOG.md` by hand in the release PR; that file is the player-facing history. Tags are pushed only when explicitly requested, after the release PR merges. Release notes group merged PRs by their labels, so labels stay accurate. Housekeeping that players never see (work log and changelog edits, roadmap and archive refreshes, agent tooling) takes the `skip-changelog` or `internal` label, which `.github/release.yml` uses to leave a PR out of GitHub's generated release list.
+- **Deterministic rules layer:** The simulation core (`crates/fizz-sim`, `crates/fizz-phys`, `crates/fizz-view`) is pure `#![no_std]` plus `alloc`, forbids `unsafe`, and has no clocks, platform types, or unseeded randomness. A tick is a pure function of its previous state and inputs.
+- **Web presentation layer:** Web views render via Canvas 2D using the 16-colour EGA palette and play retro audio with `@liminal-hq/undertone`. The presentation reacts to simulation state and never re-derives simulation logic.
+- **Hub interface:** The central arcade Hub links to all games with relative paths (`./games/<game>/`), and each game provides a styled `← Hub` button to return to `./`.
 
-## Web and DOS Parity
+## Testing and CI
 
-- Every milestone ships on both presentations. A feature is not done until it has a Web path and a DOS path. The DOS path may be reduced, such as fewer effects, flatter lighting or simpler audio, but it must run.
-- Web leads on feel and fidelity; DOS leads on budgets. The 486DX is the floor for DOS, and DOS is a bonus platform: it may cut content or features, and it never limits the game's design.
-- The state hash from `fizz-sim` is the arbiter. A change that makes the native, Web and DOS hashes disagree is a bug until proven otherwise.
-- Tools that only the Web side needs (editors, previews) may be `std`. Nothing in the rules layer may depend on a presenter.
-
-## Code and Runtime Rules
-
-- The rules layer (`fizz-sim` and the game logic built on it) is `no_std` plus `alloc`, forbids `unsafe`, and has no clocks, randomness or platform types. A frame is a function of the steps that led to it. Hosts, presenters, cookers and tools may use `std`.
-- Fizz 1's numeric model is the reference: floating point under the determinism discipline. Use basic IEEE operations only, never reorder floating-point operations for speed, use a software `libm` for transcendental functions, and set x87 to 53-bit precision on DOS before the first tick. Document any departure.
-- The simulation emits intent: a scene of tiles, sprites, lights and a camera, a composition source, and named events. Platform limits (palette depth, OPL patches, voice counts, capacity constants) live in the presenter or backend that needs them, not in the shared contract.
-- Fidelity is lost at bake time, not at run time. Offline host tools produce per-target assets. DOS parses nothing at start-up that a tool could have prepared.
-- The portable layers never use DOS, DPMI, BIOS, port I/O, interrupt vectors or raw video-memory pointers. The DOS platform layer mirrors Desk's hardware abstraction layer; platform boundaries isolate audited `unsafe` with a one-line `SAFETY:` justification.
-- Interrupt handlers do bounded work only, allocate nothing, and hand input or completed work to the game loop through a bounded single-producer/single-consumer queue. Every vector is restored on exit and panic.
-- File names remain 8.3 on the DOS side until a documented compatibility decision changes that rule.
-- No speculative scaffolding: a crate, trait or driver arrives with the consumer and test that need it. A piece is not done until a second consumer exercises it.
-
-## Testing
-
-Run `tools/check.sh` before a PR. Add a test that fails before a bug fix. Keep the simulation deterministic and prove it with state hashes and golden input traces, and prove any Fizz 1 behaviour match with a trace test against the Fizz 1 source. Test drivers against host-side models before DOSBox probes. State exactly what ran and what did not; no result implies real-hardware validation, and audio cannot be verified headlessly.
+- Continuous integration in `.github/workflows/ci.yml` runs 8 granular parallel jobs: `Rust format`, `Rust Clippy`, `Rust tests`, `Prettier format`, `ESLint`, `TypeScript type check`, `WASM build check`, and `Web site build`.
+- Each CI job publishes markdown metrics directly to `$GITHUB_STEP_SUMMARY`.
+- Merges to `main` trigger automated deployment to GitHub Pages via `.github/workflows/pages.yml`.
 
 ## Documentation
 
-Update `docs/ARCHITECTURE.md` when layers, crates or the parity policy change and `README.md` when build or demonstration use changes. Prefer stable reference documents over undocumented decisions in comments or pull requests.
+- Maintain documentation in parallel with implementation.
+- Update `docs/ARCHITECTURE.md` when monorepo layers or contracts change, and `docs/specs/*.md` when game rules change.
+- Record landing pull requests in `WORKLOG.md` and user-facing milestones in `CHANGELOG.md`.
 
-## Game Manual
+## Repository Layout
 
-The player's manual is written in parallel with the game, not at the end. It lives in one file, `docs/MANUAL.md`.
-
-- A pull request that adds or changes anything a player sees or does updates the manual in the same pull request, or says in the PR's Documentation section why no manual change is needed. That covers controls, items, enemies, gadgets, levels and the overworld, screens and menus, options, saves, differences between the Web and DOS presentations, system requirements, and how to run the game.
-- The manual is written for the player, not the developer: second person where it helps, plain words, and no crate names or internals. It describes the controls and behaviour of the current builds only. Planned features are listed in one short "Coming" section at the end, or left out. Where Web and DOS differ, such as reduced effects on DOS, the manual says what differs.
-- Screenshots in the manual are taken from real builds and say which build they show.
+```text
+minigame-lab/
+├── assets/                  # Hero banner (assets/hero.svg) and artwork
+├── crates/                  # Rust workspace
+│   ├── fizz-sim/            # Core deterministic simulation contracts and state hash
+│   ├── fizz-phys/           # Physics, collisions, platforms, and PRNG
+│   ├── fizz-view/           # Software renderer, camera, EGA palette, fonts
+│   └── <game-crates>/       # Game simulation rules crates
+├── games/                   # Bun web workspaces
+│   ├── hub/                 # Interactive CRT arcade Hub
+│   └── <game-frontends>/    # Web frontends (Vite + Canvas 2D + Undertone)
+├── docs/                    # Architecture and game specifications
+│   └── specs/               # Individual game specifications
+├── scripts/                 # Build and assembly scripts
+└── .github/workflows/       # Granular CI and Pages deployment workflows
+```
 
 ## Licence and Copyright
 
-The project is dual-licensed under Apache-2.0 OR MIT. New or substantially rewritten `.rs`, `.c`, `.h`, `.ts`, `.js`, `.py`, `.sh` and workflow YAML files begin with a summary, copyright and SPDX header:
+The project is dual-licensed under Apache-2.0 OR MIT. New or substantially rewritten source files (`.rs`, `.ts`, `.js`, `.sh`, `.yml`) begin with a summary, copyright and SPDX header:
 
 ```text
 // Brief one-line summary of what this file does.
@@ -82,8 +179,11 @@ The project is dual-licensed under Apache-2.0 OR MIT. New or substantially rewri
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 ```
 
-Use `#` for shell, Python and YAML, and `/* */` for C. Do not add headers to markdown, JSON, lockfiles or generated/config-only files.
+Use `#` for shell and YAML scripts. Do not add headers to markdown, JSON, or generated lockfiles.
 
 ## Agent Behaviour
 
-Read the relevant document before implementing. Make the requested change without unrelated refactors. State uncertainty and unverified items plainly. Stay within assigned files when several agents share the checkout.
+- Read relevant specifications and documentation before implementing.
+- Make requested changes cleanly without unrelated refactoring.
+- State uncertainty, unverified platforms, and testing omissions plainly.
+- Stay within assigned paths when collaborating in the repository.
