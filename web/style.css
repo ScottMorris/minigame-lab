@@ -1,0 +1,590 @@
+/* The Fizz pixel font of Fizz 1 (the regular face for labels, the bold mono face for numbers), shipped under the SIL Open Font
+   License (web/fonts/OFL.txt). Fizz is an 11-row font, so it is only crisp at 11 px times a whole number. */
+@font-face {
+  font-family: "Fizz";
+  font-weight: 400;
+  font-display: block;
+  src: url("./fonts/fizz-regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Fizz Mono";
+  font-weight: 700;
+  font-display: block;
+  src: url("./fonts/fizz-mono-bold.woff2") format("woff2");
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #0b0b14;
+  color: #cfe8ff;
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+
+/* The page is the game: the view fills the window and nothing scrolls. If the window is wider or narrower than the view can be,
+   the picture keeps its shape and the rest is dark. */
+main {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* main.js sets the size from the window: as tall as the window, as wide as the view it picked. Until it runs, fill the window. */
+#stage {
+  position: relative;
+  flex: none;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  background: #0000aa;
+}
+
+/* Cluck captions: Fizz 1's look (bold italic Space Grotesk, a hairline black stroke and a hard black shadow), placed and sized
+   from main.js because they follow the chicken and scale with the canvas. */
+#caption-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.caption {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  font-style: italic;
+  white-space: nowrap;
+  line-height: 1.2;
+  -webkit-text-stroke: 0.5px #000;
+  text-shadow: 2px 2px 0 #000;
+  will-change: transform, opacity;
+}
+
+:root {
+  /* Fizz 2's accent, light magenta ("grape"); crates/fizz-view/src/theme.rs holds the same value and a test keeps them equal. */
+  --fizz: #ff55ff;
+}
+
+/* The HUD: Fizz 1's desktop HUD panel (episodes/episode-1/src/ui/hud.css), laid out as the Two-Row Stack: dark glass, a small dim
+   label beside each big pixel number, Fizz and Score on the top row, Deaths and the key tray on the bottom. main.js sets --n, the
+   whole-number pixel scale, from the stage's height (Fizz 1's rule, hud.ts `hudScale`) and --key-px, the size of one pixel of a
+   tray key. 16 px from the corner. It sits above the captions and below the panel and its toast, takes no clicks, does not move
+   (the box is one size whatever it shows) and has no animation: the ring and the count-up are the page changing what it draws. */
+#play-hud {
+  --n: 3;
+  --key-px: 3px;
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 16px);
+  left: calc(env(safe-area-inset-left, 0px) + 16px);
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: calc(var(--n) * 8px);
+  row-gap: calc(var(--n) * 1px);
+  align-items: center;
+  padding: calc(var(--n) * 3px) calc(var(--n) * 5px);
+  background: rgba(12, 12, 16, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+  font-family: "Fizz", ui-monospace, monospace;
+  font-size: calc(11px * var(--n));
+  line-height: calc(13px * var(--n));
+  font-synthesis: none;
+  font-kerning: none;
+  letter-spacing: 0;
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: none;
+  color: #e0e0e0;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Ben came near the corner: the HUD takes the other one (main.js). */
+#play-hud[data-side="right"] {
+  left: auto;
+  right: calc(env(safe-area-inset-right, 0px) + 16px);
+}
+
+#play-hud .cell {
+  display: flex;
+  align-items: baseline;
+  gap: calc(var(--n) * 3px);
+  white-space: nowrap;
+}
+
+#play-hud .lbl {
+  font-size: calc(var(--n) * 22px / 3);
+  line-height: calc(var(--n) * 26px / 3);
+  color: #7c8796;
+}
+
+/* The word Score gives way to the points of a snack for a second. Both sit in one cell, so the box keeps its size. */
+#play-hud .swap {
+  display: grid;
+}
+
+#play-hud .swap > * {
+  grid-area: 1 / 1;
+}
+
+#play-hud .pop {
+  justify-self: end;
+  font-family: "Fizz Mono", ui-monospace, monospace;
+  font-weight: 700;
+  color: #ffff55;
+}
+
+/* Two digits wide always, so the box does not change size at 10 Fizz or 10 deaths. */
+#play-hud #hud-fizz,
+#play-hud #hud-deaths {
+  min-width: 2ch;
+}
+
+#play-hud .num {
+  font-family: "Fizz Mono", ui-monospace, monospace;
+  font-weight: 700;
+  color: var(--fizz);
+}
+
+/* The Fizz number has a black outline all round (Fizz 1 has none), so light red at zero keeps its contrast over any picture. */
+#play-hud #hud-fizz {
+  text-shadow:
+    calc(var(--n) * 1px) 0 0 #000,
+    calc(var(--n) * -1px) 0 0 #000,
+    0 calc(var(--n) * 1px) 0 #000,
+    0 calc(var(--n) * -1px) 0 #000,
+    calc(var(--n) * 1px) calc(var(--n) * 1px) 0 #000,
+    calc(var(--n) * -1px) calc(var(--n) * 1px) 0 #000,
+    calc(var(--n) * 1px) calc(var(--n) * -1px) 0 #000,
+    calc(var(--n) * -1px) calc(var(--n) * -1px) 0 #000;
+}
+
+/* The score is yellow, as in Fizz 1, so it is never taken for the grape Fizz; its leading zeros are dim padding. */
+#play-hud .score {
+  color: #ffff55;
+}
+
+#play-hud .lz {
+  opacity: 0.28;
+}
+
+/* Deaths is a plain count, not the Fizz: Fizz 1's light text colour, so it is never taken for the ammunition. */
+#play-hud #hud-deaths {
+  color: #e0e0e0;
+}
+
+#play-hud .num[data-out] {
+  color: #ff5555;
+}
+
+/* The key tray: one socket for each kind of key the level has, a 7 by 7 key drawn empty (its dim edge) and filled when held, a ring
+   round it for a moment after the pickup, and a row of pips under it for duplicates. */
+#play-hud .tray {
+  display: flex;
+  align-items: flex-start;
+  gap: calc(var(--n) * 3px);
+  padding-top: calc(var(--n) * 1px);
+}
+
+#play-hud .sock {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--key-px);
+}
+
+#play-hud .sock[hidden] {
+  display: none;
+}
+
+#play-hud .sock .key {
+  display: block;
+  width: calc(7 * var(--key-px));
+  height: calc(7 * var(--key-px));
+  image-rendering: pixelated;
+}
+
+#play-hud .sock .key svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+#play-hud .sock[data-held="true"] .off,
+#play-hud .sock[data-held="false"] .on {
+  display: none;
+}
+
+/* The ring: a white pixel's width round the key's silhouette. */
+#play-hud .sock[data-ring="true"] .key {
+  filter: drop-shadow(var(--key-px) 0 0 #fff) drop-shadow(calc(var(--key-px) * -1) 0 0 #fff) drop-shadow(0 var(--key-px) 0 #fff)
+    drop-shadow(0 calc(var(--key-px) * -1) 0 #fff);
+}
+
+#play-hud .sock .pips {
+  display: flex;
+  gap: var(--key-px);
+  height: var(--key-px);
+}
+
+#play-hud .sock .pips i {
+  display: block;
+  width: var(--key-px);
+  height: var(--key-px);
+  background: #fff;
+}
+
+/* More than four of a kind: the count, over the key. */
+#play-hud .sock .cnt {
+  position: absolute;
+  top: calc(var(--key-px) * -1);
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: "Fizz Mono", ui-monospace, monospace;
+  font-weight: 700;
+  font-size: calc(var(--n) * 7px);
+  line-height: calc(var(--n) * 9px);
+  color: #fff;
+  text-shadow: calc(var(--n) * 1px) 0 0 #000, calc(var(--n) * -1px) 0 0 #000, 0 calc(var(--n) * 1px) 0 #000, 0 calc(var(--n) * -1px) 0 #000;
+}
+
+/* Spoken, not seen. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+#hud {
+  margin: 0;
+  font-size: 14px;
+}
+
+.help {
+  margin: 0;
+  color: #8aa;
+  font-size: 13px;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+button {
+  font: inherit;
+  font-size: 13px;
+  color: #cfe8ff;
+  background: #1a1a33;
+  border: 1px solid #335;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+button:hover,
+button:focus-visible {
+  border-color: #8aa;
+}
+
+.audition {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  color: #8aa;
+  font-size: 13px;
+}
+
+.audition select {
+  font: inherit;
+  font-size: 13px;
+  color: #cfe8ff;
+  background: #1a1a33;
+  border: 1px solid #335;
+  padding: 3px 6px;
+}
+
+.audition select:focus-visible {
+  border-color: #8aa;
+}
+
+.note {
+  margin: 0;
+  color: #6c7f8f;
+  font-size: 12px;
+}
+
+#panel-toggle {
+  position: fixed;
+  right: 8px;
+  bottom: 8px;
+  z-index: 3;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 50%;
+  opacity: 0.45;
+}
+
+#panel-toggle:hover,
+#panel-toggle:focus-visible,
+#panel-toggle[aria-expanded="true"] {
+  opacity: 1;
+}
+
+#panel {
+  position: fixed;
+  right: 8px;
+  bottom: 44px;
+  z-index: 2;
+  box-sizing: border-box;
+  width: min(420px, calc(100vw - 16px));
+  max-height: calc(100vh - 56px);
+  max-height: calc(100dvh - 56px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  background: rgba(11, 11, 20, 0.92);
+  border: 1px solid #335;
+}
+
+#panel[hidden] {
+  display: none;
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 12px;
+  z-index: 1;
+  transform: translateX(-50%);
+  max-width: calc(100vw - 80px);
+  margin: 0;
+  padding: 6px 12px;
+  background: rgba(11, 11, 20, 0.85);
+  color: #cfe8ff;
+  font-size: 13px;
+  text-align: center;
+  pointer-events: none;
+  transition: opacity 0.6s;
+}
+
+.toast.gone {
+  opacity: 0;
+}
+
+/* The Paused and Options screens (web/options.ts), in Fizz 1's Web menu look (packages/engine/src/menu/rows.css and tokens.css): a
+   dark panel over the dimmed picture, rows with a bullet gutter and a plate, the selected row's plate in the Fizz accent with its
+   clipped corners and dark ink, a soda can bobbing beside it, values muted and `◄ value ►` on the selected choice. The plate steps
+   through three shades of the accent. main.js sets --n, the whole-number pixel scale, from the stage's height, as for the HUD. */
+#options {
+  --n: 3;
+  --plate-a: var(--fizz);
+  --plate-b: #ff77ff;
+  --plate-c: #ff99ff;
+  --plate-ink: #1a001a;
+  --text: #e0e0e0;
+  --muted: #b4bfce;
+  --dim: #7c8796;
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+  font-family: "Fizz", ui-monospace, monospace;
+  font-size: calc(11px * var(--n));
+  line-height: calc(13px * var(--n));
+  font-synthesis: none;
+  font-kerning: none;
+  letter-spacing: 0;
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: none;
+  color: var(--text);
+  user-select: none;
+}
+
+#options[hidden] {
+  display: none;
+}
+
+#options .opt-panel {
+  box-sizing: border-box;
+  width: min(calc(11px * var(--n) * 24), calc(100% - 16px));
+  max-height: calc(100% - 16px);
+  overflow-y: auto;
+  padding: calc(var(--n) * 6px) calc(var(--n) * 8px);
+  background: rgba(12, 12, 16, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+}
+
+#options h2 {
+  margin: 0 0 calc(var(--n) * 4px);
+  font: inherit;
+  font-size: calc(11px * (var(--n) + 1));
+  line-height: calc(13px * (var(--n) + 1));
+  font-weight: 400;
+  color: #fff;
+  text-shadow: 0 calc(var(--n) * 1px) 0 #000;
+}
+
+#options .menu {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+#options .row {
+  display: flex;
+  align-items: center;
+  gap: max(6px, calc(var(--n) * 2px));
+  height: calc(var(--n) * 11px);
+  cursor: pointer;
+  outline: none;
+  text-shadow: 0 calc(var(--n) * 1px) 0 #000;
+}
+
+#options .gut {
+  position: relative;
+  flex: none;
+  align-self: stretch;
+  width: calc(var(--n) * 11px);
+}
+
+#options .bullet {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  transform: translateY(-50%);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+#options .bullet svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+}
+
+#options .row.sel .bullet {
+  visibility: visible;
+  animation: opt-bob 1.26s step-end infinite;
+}
+
+#options .lbl {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#options .plate {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: calc(var(--n) * 3px);
+  align-self: stretch;
+  min-width: 0;
+  padding: 0 calc(var(--n) * 4px);
+}
+
+#options .row.sel .plate {
+  background: var(--plate-a);
+  color: var(--plate-ink);
+  text-shadow: none;
+  clip-path: polygon(4px 0, calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px), 0 4px, 4px 4px);
+  animation: opt-plate 1.6s step-end infinite;
+}
+
+#options .val {
+  flex: none;
+  margin-left: auto;
+  display: flex;
+  gap: calc(var(--n) * 3px);
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+#options .row.sel .val {
+  color: var(--plate-ink);
+}
+
+/* The arrows are for the mouse and mark a row you can change; they show on the selected choice only. */
+#options .arrow {
+  visibility: hidden;
+  cursor: pointer;
+}
+
+#options .row.sel[data-choice] .arrow {
+  visibility: visible;
+}
+
+#options .opt-note,
+#options .opt-foot {
+  margin: calc(var(--n) * 3px) 0 0;
+  font-size: calc(11px * max(1, var(--n) - 1));
+  line-height: calc(13px * max(1, var(--n) - 1));
+  color: var(--dim);
+  text-shadow: 0 calc(var(--n) * 1px) 0 #000;
+}
+
+#options .opt-note[hidden] {
+  display: none;
+}
+
+@keyframes opt-plate {
+  0% { background: var(--plate-a); }
+  25% { background: var(--plate-b); }
+  50% { background: var(--plate-c); }
+  75% { background: var(--plate-b); }
+}
+
+@keyframes opt-bob {
+  0%, 100% { transform: translate(0, -50%); }
+  25% { transform: translate(calc(var(--n) * 1px), -50%); }
+  75% { transform: translate(calc(var(--n) * -1px), -50%); }
+}
+
+/* Reduced motion, from the system or the Motion option (main.js adds .rm): the plate holds its first shade and the can holds still. */
+@media (prefers-reduced-motion: reduce) {
+  #options .row.sel .plate,
+  #options .row.sel .bullet {
+    animation: none;
+  }
+}
+
+#options.rm .row.sel .plate,
+#options.rm .row.sel .bullet {
+  animation: none;
+}

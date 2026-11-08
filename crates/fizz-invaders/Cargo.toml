@@ -1,0 +1,10 @@
+[package]
+name = "fizz-invaders"
+version = "0.1.0"
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+fizz-sim = { path = "../fizz-sim" }
+fizz-view = { path = "../fizz-view" }

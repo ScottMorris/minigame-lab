@@ -1,0 +1,9 @@
+node_modules/
+dist/
+dist-site/
+target/
+.DS_Store
+*.tsbuildinfo
+test-results/
+.playwright-mcp/
+playwright-report/
