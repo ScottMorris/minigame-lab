@@ -14,6 +14,7 @@
     "build:wasm": "bash scripts/build-wasm.sh",
     "test": "true",
     "test:rust": "cargo test --workspace",
+    "test:ui": "bun run scripts/verify-ui.ts",
     "lint": "eslint .",
     "lint:rust": "cargo clippy --workspace --all-targets -- -D warnings",
     "format": "prettier --write . && cargo fmt --all",
@@ -23,6 +24,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10",
+    "@playwright/test": "^1.65.0",
     "@types/node": "^22",
     "eslint": "^10",
     "prettier": "^3.9.9",
