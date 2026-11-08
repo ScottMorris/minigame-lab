@@ -86,7 +86,16 @@ async function main() {
     await page.goto(targetUrl, { waitUntil: 'networkidle' });
 
     // Wait 1.5 seconds for game loops, particles, and canvases to render
-    await page.waitForTimeout(1500);
+    await page.waitForTimeout(1000);
+
+    if (r.name === 'gumdrop-pacman') {
+      await page.keyboard.press('ArrowLeft');
+      await page.waitForTimeout(500);
+      await page.keyboard.press('ArrowUp');
+      await page.waitForTimeout(500);
+    } else {
+      await page.waitForTimeout(500);
+    }
 
     const screenshotPath = join(SCREENSHOT_DIR, `${r.name}.png`);
     await page.screenshot({ path: screenshotPath, fullPage: true });
