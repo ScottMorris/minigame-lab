@@ -2,6 +2,16 @@
 // (c) Copyright 2026 Liminal HQ, Scott Morris
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
+import { note, sound, stack, type Pattern, type ControlPatch } from '@liminal-hq/undertone';
+
+function playSafe(pattern: Pattern<ControlPatch>) {
+  try {
+    pattern.play();
+  } catch {
+    // Autoplay restrictions or headless environment
+  }
+}
+
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d')!;
 
@@ -24,64 +34,33 @@ const EGA = {
   white: '#ffffff',
 };
 
+// Procedural Retro Audio Synthesizer via @liminal-hq/undertone
 class SoundFx {
-  private ctx: AudioContext | null = null;
-  private init() {
-    if (!this.ctx) {
-      const AudioCtx =
-        window.AudioContext ||
-        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      this.ctx = new AudioCtx();
-    }
-    if (this.ctx.state === 'suspended') this.ctx.resume();
-  }
-
   playLaser() {
-    this.init();
-    if (!this.ctx) return;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(660, this.ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(150, this.ctx.currentTime + 0.1);
-    gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.1);
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-    osc.start();
-    osc.stop(this.ctx.currentTime + 0.1);
+    playSafe(
+      stack(
+        note('e5').sound('sawtooth').slide(0.08).decay(0.09).gain(0.12),
+        sound('white').decay(0.02).gain(0.06).lpf(3000),
+      ),
+    );
   }
 
   playThrust() {
-    this.init();
-    if (!this.ctx) return;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(90, this.ctx.currentTime);
-    osc.frequency.setValueAtTime(130, this.ctx.currentTime + 0.05);
-    gain.gain.setValueAtTime(0.05, this.ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-    osc.start();
-    osc.stop(this.ctx.currentTime + 0.05);
+    playSafe(
+      stack(
+        note('f1').sound('triangle').decay(0.05).gain(0.15),
+        sound('brown').decay(0.05).gain(0.1).lpf(250),
+      ),
+    );
   }
 
   playExplode() {
-    this.init();
-    if (!this.ctx) return;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(220, this.ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(40, this.ctx.currentTime + 0.25);
-    gain.gain.setValueAtTime(0.18, this.ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.25);
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-    osc.start();
-    osc.stop(this.ctx.currentTime + 0.25);
+    playSafe(
+      stack(
+        sound('brown').decay(0.28).gain(0.25).lpf(600),
+        note('c2').sound('sawtooth').slide(0.2).decay(0.25).gain(0.2),
+      ),
+    );
   }
 }
 const sfx = new SoundFx();
