@@ -130,12 +130,11 @@ const sfx = new SoundFx();
 
 const TILE_SIZE = 20;
 const COLS = 28;
-const ROWS = 28;
 const MAZE_OFFSET_Y = 40;
 
 // Tile types:
-// 0 = empty / corridor (no dot)
-// 1 = wall
+// 0 = corridor (no gumdrop)
+// 1 = solid Citadel wall
 // 2 = gumdrop (+10 pts)
 // 3 = cream soda power can (+50 pts)
 // 4 = ghost pen door / gate
@@ -165,10 +164,6 @@ const MAZE_TEMPLATE: number[][] = [
   [1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1],
   [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1],
   [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ];
 
 interface Ghost {
@@ -179,9 +174,9 @@ interface Ghost {
   dirY: number;
   normalColour: string;
   frightened: boolean;
-  eaten: boolean;
+  state: 'in_house' | 'leaving_house' | 'in_maze' | 'eaten';
+  leaveTimer: number;
   speed: number;
-  targetTile: { x: number; y: number };
 }
 
 interface FloatingText {
@@ -202,13 +197,13 @@ class GumdropPacmanGame {
   public paused = false;
 
   // Ben / Player
-  private playerX = 13.5 * TILE_SIZE;
-  private playerY = 17 * TILE_SIZE + TILE_SIZE / 2;
-  private playerDirX = 0;
+  private playerX = 13.5 * TILE_SIZE; // 270 (centre of Tile 13)
+  private playerY = 17 * TILE_SIZE + TILE_SIZE / 2; // 350 (centre of Row 17)
+  private playerDirX = -1;
   private playerDirY = 0;
   private nextDirX = 0;
   private nextDirY = 0;
-  private playerSpeed = 2.2;
+  private playerSpeed = 2.0;
   private mouthAngle = 0.2;
   private mouthDir = 1;
 
@@ -246,7 +241,7 @@ class GumdropPacmanGame {
   private resetMaze() {
     this.grid = [];
     this.remainingGumdrops = 0;
-    for (let r = 0; r < 24; r++) {
+    for (let r = 0; r < MAZE_TEMPLATE.length; r++) {
       const row: number[] = [];
       for (let c = 0; c < COLS; c++) {
         const val = MAZE_TEMPLATE[r][c];
@@ -260,9 +255,9 @@ class GumdropPacmanGame {
   }
 
   private resetActors() {
-    this.playerX = 13.5 * TILE_SIZE;
-    this.playerY = 17 * TILE_SIZE + TILE_SIZE / 2;
-    this.playerDirX = 0;
+    this.playerX = 13.5 * TILE_SIZE; // 270
+    this.playerY = 17 * TILE_SIZE + TILE_SIZE / 2; // 350
+    this.playerDirX = -1;
     this.playerDirY = 0;
     this.nextDirX = 0;
     this.nextDirY = 0;
@@ -276,45 +271,45 @@ class GumdropPacmanGame {
         dirY: 0,
         normalColour: EGA.lightRed,
         frightened: false,
-        eaten: false,
-        speed: 1.8 + this.wave * 0.1,
-        targetTile: { x: 0, y: 0 },
+        state: 'in_maze',
+        leaveTimer: 0,
+        speed: 2.0,
       },
       {
         name: 'Pinky',
-        x: 12.5 * TILE_SIZE,
+        x: 13.5 * TILE_SIZE,
         y: 10.5 * TILE_SIZE,
         dirX: 0,
         dirY: -1,
         normalColour: EGA.lightMagenta,
         frightened: false,
-        eaten: false,
-        speed: 1.7 + this.wave * 0.1,
-        targetTile: { x: 0, y: 0 },
+        state: 'in_house',
+        leaveTimer: 60, // leaves after 1s
+        speed: 1.9,
       },
       {
         name: 'Inky',
-        x: 13.5 * TILE_SIZE,
+        x: 12.0 * TILE_SIZE,
         y: 10.5 * TILE_SIZE,
         dirX: 0,
-        dirY: -1,
+        dirY: 1,
         normalColour: EGA.lightCyan,
         frightened: false,
-        eaten: false,
-        speed: 1.6 + this.wave * 0.1,
-        targetTile: { x: 0, y: 0 },
+        state: 'in_house',
+        leaveTimer: 180, // leaves after 3s
+        speed: 1.8,
       },
       {
         name: 'Clyde',
-        x: 14.5 * TILE_SIZE,
+        x: 15.0 * TILE_SIZE,
         y: 10.5 * TILE_SIZE,
         dirX: 0,
         dirY: -1,
         normalColour: EGA.yellow,
         frightened: false,
-        eaten: false,
-        speed: 1.5 + this.wave * 0.1,
-        targetTile: { x: 0, y: 0 },
+        state: 'in_house',
+        leaveTimer: 320, // leaves after ~5.3s
+        speed: 1.7,
       },
     ];
 
@@ -335,15 +330,15 @@ class GumdropPacmanGame {
     this.nextDirY = dy;
   }
 
-  private isPassable(tileX: number, tileY: number, isGhost = false): boolean {
+  private isPassable(tileX: number, tileY: number, canPassDoor = false): boolean {
     if (tileY < 0 || tileY >= this.grid.length) return false;
-    // Wrapping tunnel rows 10, 11
+    // Wrapping tunnel rows on sides
     if (tileX < 0 || tileX >= COLS) return true;
 
     const tile = this.grid[tileY][tileX];
     if (tile === 1) return false; // Wall
-    if (tile === 4) return isGhost; // Ghost door
-    if (tile === 5) return isGhost; // Ghost interior
+    if (tile === 4) return canPassDoor; // Door
+    if (tile === 5) return canPassDoor; // Ghost house interior
     return true;
   }
 
@@ -372,10 +367,12 @@ class GumdropPacmanGame {
       this.bonusItem.points = 300;
     }
 
-    // Mouth animation
-    this.mouthAngle += 0.05 * this.mouthDir;
-    if (this.mouthAngle > 0.45) this.mouthDir = -1;
-    if (this.mouthAngle < 0.05) this.mouthDir = 1;
+    // Mouth animation while moving
+    if (this.playerDirX !== 0 || this.playerDirY !== 0) {
+      this.mouthAngle += 0.06 * this.mouthDir;
+      if (this.mouthAngle > 0.45) this.mouthDir = -1;
+      if (this.mouthAngle < 0.05) this.mouthDir = 1;
+    }
 
     // Player Turning & Movement
     this.updatePlayerMovement();
@@ -405,7 +402,7 @@ class GumdropPacmanGame {
         this.ghostsEatenStreak = 0;
         sfx.playPower();
         for (const g of this.ghosts) {
-          if (!g.eaten) {
+          if (g.state === 'in_maze') {
             g.frightened = true;
             g.dirX *= -1;
             g.dirY *= -1;
@@ -439,38 +436,40 @@ class GumdropPacmanGame {
       return;
     }
 
-    // Update Ghosts
+    // Update Ghosts & Check Collisions
     for (const g of this.ghosts) {
       this.updateGhost(g);
 
-      // Collision with Player
-      const dist = Math.hypot(this.playerX - g.x, this.playerY - g.y);
-      if (dist < 16) {
-        if (g.frightened && !g.eaten) {
-          // Eat Ghost
-          g.eaten = true;
-          g.frightened = false;
-          this.ghostsEatenStreak++;
-          const pts = Math.pow(2, this.ghostsEatenStreak) * 100;
-          this.score += pts;
-          sfx.playEatGhost();
-          this.floatingTexts.push({
-            x: g.x,
-            y: g.y,
-            text: `+${pts}`,
-            colour: EGA.lightCyan,
-            life: 35,
-          });
-        } else if (!g.eaten) {
-          // Player Died
-          sfx.playDie();
-          this.lives--;
-          if (this.lives <= 0) {
-            this.gameOver = true;
+      // Collision with Player (only when ghost is roaming in maze)
+      if (g.state === 'in_maze') {
+        const dist = Math.hypot(this.playerX - g.x, this.playerY - g.y);
+        if (dist < 15) {
+          if (g.frightened) {
+            // Eat Ghost
+            g.state = 'eaten';
+            g.frightened = false;
+            this.ghostsEatenStreak++;
+            const pts = Math.pow(2, this.ghostsEatenStreak) * 100;
+            this.score += pts;
+            sfx.playEatGhost();
+            this.floatingTexts.push({
+              x: g.x,
+              y: g.y,
+              text: `+${pts}`,
+              colour: EGA.lightCyan,
+              life: 35,
+            });
           } else {
-            this.resetActors();
+            // Player Died
+            sfx.playDie();
+            this.lives--;
+            if (this.lives <= 0) {
+              this.gameOver = true;
+            } else {
+              this.resetActors();
+            }
+            return;
           }
-          return;
         }
       }
     }
@@ -487,129 +486,264 @@ class GumdropPacmanGame {
   }
 
   private updatePlayerMovement() {
-    // Try turning if desired direction is set
-    if (this.nextDirX !== 0 || this.nextDirY !== 0) {
-      const tileX = Math.floor(this.playerX / TILE_SIZE);
-      const tileY = Math.floor(this.playerY / TILE_SIZE);
-      const centreX = tileX * TILE_SIZE + TILE_SIZE / 2;
-      const centreY = tileY * TILE_SIZE + TILE_SIZE / 2;
+    const tileX = Math.floor(this.playerX / TILE_SIZE);
+    const tileY = Math.floor(this.playerY / TILE_SIZE);
+    const centreX = tileX * TILE_SIZE + TILE_SIZE / 2;
+    const centreY = tileY * TILE_SIZE + TILE_SIZE / 2;
 
-      // Turning 180 degrees is always allowed immediately
-      if (this.nextDirX === -this.playerDirX && this.nextDirY === -this.playerDirY) {
+    // 1. Initial start from standstill if key pressed
+    if (
+      this.playerDirX === 0 &&
+      this.playerDirY === 0 &&
+      (this.nextDirX !== 0 || this.nextDirY !== 0)
+    ) {
+      if (this.isPassable(tileX + this.nextDirX, tileY + this.nextDirY)) {
         this.playerDirX = this.nextDirX;
         this.playerDirY = this.nextDirY;
-      } else if (Math.hypot(this.playerX - centreX, this.playerY - centreY) < 3) {
-        // Near tile centre, check if the perpendicular corridor is clear
-        if (this.isPassable(tileX + this.nextDirX, tileY + this.nextDirY)) {
-          this.playerX = centreX;
-          this.playerY = centreY;
-          this.playerDirX = this.nextDirX;
-          this.playerDirY = this.nextDirY;
-        }
+        this.nextDirX = 0;
+        this.nextDirY = 0;
+      }
+    }
+    // 2. Immediate 180-degree turnaround anywhere in the corridor
+    else if (
+      this.nextDirX === -this.playerDirX &&
+      this.nextDirY === -this.playerDirY &&
+      (this.nextDirX !== 0 || this.nextDirY !== 0)
+    ) {
+      this.playerDirX = this.nextDirX;
+      this.playerDirY = this.nextDirY;
+      this.nextDirX = 0;
+      this.nextDirY = 0;
+    }
+    // 3. Perpendicular turning near tile centre
+    else if (this.playerDirY === 0 && this.nextDirY !== 0) {
+      // Currently moving horizontally, wants to turn vertically
+      if (
+        Math.abs(this.playerX - centreX) <= this.playerSpeed &&
+        this.isPassable(tileX, tileY + this.nextDirY)
+      ) {
+        this.playerX = centreX;
+        this.playerDirX = 0;
+        this.playerDirY = this.nextDirY;
+        this.nextDirX = 0;
+        this.nextDirY = 0;
+      }
+    } else if (this.playerDirX === 0 && this.nextDirX !== 0) {
+      // Currently moving vertically, wants to turn horizontally
+      if (
+        Math.abs(this.playerY - centreY) <= this.playerSpeed &&
+        this.isPassable(tileX + this.nextDirX, tileY)
+      ) {
+        this.playerY = centreY;
+        this.playerDirX = this.nextDirX;
+        this.playerDirY = 0;
+        this.nextDirX = 0;
+        this.nextDirY = 0;
       }
     }
 
-    // Move in current direction if path ahead is clear
-    if (this.playerDirX !== 0 || this.playerDirY !== 0) {
-      const nextX = this.playerX + this.playerDirX * this.playerSpeed;
-      const nextY = this.playerY + this.playerDirY * this.playerSpeed;
-
-      // Side Wrap Tunnel
-      if (nextX < 0) {
-        this.playerX = canvas.width;
-      } else if (nextX > canvas.width) {
-        this.playerX = 0;
+    // 4. Advance in current direction (stopping smoothly at walls)
+    if (this.playerDirX === -1) {
+      if (!this.isPassable(tileX - 1, tileY)) {
+        this.playerX = Math.max(centreX, this.playerX - this.playerSpeed);
       } else {
-        const checkTileX = Math.floor((nextX + this.playerDirX * 8) / TILE_SIZE);
-        const checkTileY = Math.floor((nextY + this.playerDirY * 8) / TILE_SIZE);
-
-        if (this.isPassable(checkTileX, checkTileY)) {
-          this.playerX = nextX;
-          this.playerY = nextY;
-        } else {
-          // Snap to tile centre upon hitting wall
-          const tileX = Math.floor(this.playerX / TILE_SIZE);
-          const tileY = Math.floor(this.playerY / TILE_SIZE);
-          this.playerX = tileX * TILE_SIZE + TILE_SIZE / 2;
-          this.playerY = tileY * TILE_SIZE + TILE_SIZE / 2;
-        }
+        this.playerX -= this.playerSpeed;
       }
+    } else if (this.playerDirX === 1) {
+      if (!this.isPassable(tileX + 1, tileY)) {
+        this.playerX = Math.min(centreX, this.playerX + this.playerSpeed);
+      } else {
+        this.playerX += this.playerSpeed;
+      }
+    } else if (this.playerDirY === -1) {
+      if (!this.isPassable(tileX, tileY - 1)) {
+        this.playerY = Math.max(centreY, this.playerY - this.playerSpeed);
+      } else {
+        this.playerY -= this.playerSpeed;
+      }
+    } else if (this.playerDirY === 1) {
+      if (!this.isPassable(tileX, tileY + 1)) {
+        this.playerY = Math.min(centreY, this.playerY + this.playerSpeed);
+      } else {
+        this.playerY += this.playerSpeed;
+      }
+    }
+
+    // 5. Side Wrap Tunnel
+    if (this.playerX < -8) {
+      this.playerX = canvas.width + 8;
+    } else if (this.playerX > canvas.width + 8) {
+      this.playerX = -8;
     }
   }
 
   private updateGhost(g: Ghost) {
-    // Eaten eyes returning to ghost house
-    if (g.eaten) {
-      const houseX = 13.5 * TILE_SIZE;
-      const houseY = 10.5 * TILE_SIZE;
-      const dx = houseX - g.x;
-      const dy = houseY - g.y;
-      const dist = Math.hypot(dx, dy);
-      if (dist < 4) {
-        g.eaten = false;
-        g.frightened = false;
-        g.dirY = -1;
-        g.dirX = 0;
+    if (g.state === 'in_house') {
+      g.leaveTimer--;
+      if (g.leaveTimer <= 0) {
+        g.state = 'leaving_house';
       } else {
+        g.y += g.dirY * 0.6;
+        if (g.y < 10 * TILE_SIZE + 4) g.dirY = 1;
+        if (g.y > 11 * TILE_SIZE + 16) g.dirY = -1;
+      }
+      return;
+    }
+
+    if (g.state === 'leaving_house') {
+      const exitDoorX = 13.5 * TILE_SIZE; // 270
+      const exitTargetY = 8.5 * TILE_SIZE; // 170
+      if (Math.abs(g.x - exitDoorX) > 1) {
+        g.x += (exitDoorX > g.x ? 1 : -1) * 1.5;
+      } else {
+        g.x = exitDoorX;
+        g.y -= 1.5;
+        if (g.y <= exitTargetY) {
+          g.y = exitTargetY;
+          g.state = 'in_maze';
+          g.dirX = Math.random() > 0.5 ? 1 : -1;
+          g.dirY = 0;
+        }
+      }
+      return;
+    }
+
+    if (g.state === 'eaten') {
+      const doorX = 13.5 * TILE_SIZE;
+      const doorY = 8.5 * TILE_SIZE;
+      const dx = doorX - g.x;
+      const dy = doorY - g.y;
+      const dist = Math.hypot(dx, dy);
+
+      if (dist < 5) {
+        // Entered doorway, move down inside house
+        g.x = doorX;
+        g.y += 2.0;
+        if (g.y >= 10.5 * TILE_SIZE) {
+          g.state = 'leaving_house';
+          g.frightened = false;
+        }
+      } else {
+        // Fast flying eyes to door
         g.x += (dx / dist) * 3.5;
         g.y += (dy / dist) * 3.5;
       }
       return;
     }
 
-    const currentSpeed = g.frightened ? g.speed * 0.6 : g.speed;
+    // g.state === 'in_maze'
+    const currentSpeed = g.frightened ? g.speed * 0.65 : g.speed;
     const tileX = Math.floor(g.x / TILE_SIZE);
     const tileY = Math.floor(g.y / TILE_SIZE);
     const centreX = tileX * TILE_SIZE + TILE_SIZE / 2;
     const centreY = tileY * TILE_SIZE + TILE_SIZE / 2;
 
-    // At intersection or tile centre, pick best direction
-    if (Math.hypot(g.x - centreX, g.y - centreY) < currentSpeed) {
-      g.x = centreX;
-      g.y = centreY;
+    let crossed = false;
+    if (g.dirX === -1) {
+      const nextX = g.x - currentSpeed;
+      if (g.x >= centreX && nextX <= centreX) {
+        g.x = centreX;
+        crossed = true;
+      } else {
+        g.x = nextX;
+      }
+    } else if (g.dirX === 1) {
+      const nextX = g.x + currentSpeed;
+      if (g.x <= centreX && nextX >= centreX) {
+        g.x = centreX;
+        crossed = true;
+      } else {
+        g.x = nextX;
+      }
+    } else if (g.dirY === -1) {
+      const nextY = g.y - currentSpeed;
+      if (g.y >= centreY && nextY <= centreY) {
+        g.y = centreY;
+        crossed = true;
+      } else {
+        g.y = nextY;
+      }
+    } else if (g.dirY === 1) {
+      const nextY = g.y + currentSpeed;
+      if (g.y <= centreY && nextY >= centreY) {
+        g.y = centreY;
+        crossed = true;
+      } else {
+        g.y = nextY;
+      }
+    }
 
-      // Available directions (forbidding immediate 180 turnaround)
-      const possibleDirs = [
+    if (crossed) {
+      const curTileX = Math.floor(g.x / TILE_SIZE);
+      const curTileY = Math.floor(g.y / TILE_SIZE);
+
+      // Available directions (excluding 180 turnaround, walls, and ghost door)
+      let candidates = [
         { dx: 0, dy: -1 },
         { dx: 0, dy: 1 },
         { dx: -1, dy: 0 },
         { dx: 1, dy: 0 },
       ].filter((d) => {
         if (d.dx === -g.dirX && d.dy === -g.dirY) return false;
-        return this.isPassable(tileX + d.dx, tileY + d.dy, true);
+        return this.isPassable(curTileX + d.dx, curTileY + d.dy, false);
       });
 
-      if (possibleDirs.length > 0) {
-        if (g.frightened) {
-          // Wander randomly when frightened
-          const picked = possibleDirs[Math.floor(Math.random() * possibleDirs.length)];
-          g.dirX = picked.dx;
-          g.dirY = picked.dy;
-        } else {
-          // AI targeting Ben's position
-          let bestDir = possibleDirs[0];
-          let bestDist = Infinity;
-          for (const d of possibleDirs) {
-            const nextTileX = (tileX + d.dx) * TILE_SIZE;
-            const nextTileY = (tileY + d.dy) * TILE_SIZE;
-            const dist = Math.hypot(nextTileX - this.playerX, nextTileY - this.playerY);
-            if (dist < bestDist) {
-              bestDist = dist;
-              bestDir = d;
-            }
-          }
-          g.dirX = bestDir.dx;
-          g.dirY = bestDir.dy;
-        }
+      // If dead end, 180 turnaround is permitted
+      if (candidates.length === 0) {
+        candidates = [{ dx: -g.dirX, dy: -g.dirY }];
       }
+
+      if (g.frightened) {
+        // Random choice when scared
+        const chosen = candidates[Math.floor(Math.random() * candidates.length)];
+        g.dirX = chosen.dx;
+        g.dirY = chosen.dy;
+      } else {
+        // Target tile calculation
+        const playerTileX = Math.floor(this.playerX / TILE_SIZE);
+        const playerTileY = Math.floor(this.playerY / TILE_SIZE);
+        let targetX = playerTileX;
+        let targetY = playerTileY;
+
+        if (g.name === 'Pinky') {
+          targetX = playerTileX + 4 * this.playerDirX;
+          targetY = playerTileY + 4 * this.playerDirY;
+        } else if (g.name === 'Inky') {
+          targetX = playerTileX + 2 * this.playerDirX;
+          targetY = playerTileY + 2 * this.playerDirY;
+        } else if (g.name === 'Clyde') {
+          const distToPlayer = Math.hypot(curTileX - playerTileX, curTileY - playerTileY);
+          if (distToPlayer < 8) {
+            targetX = 1;
+            targetY = 22; // scatter corner
+          }
+        }
+
+        // Pick direction minimizing distance to target
+        let bestDir = candidates[0];
+        let bestDist = Infinity;
+        for (const d of candidates) {
+          const dist = Math.hypot(curTileX + d.dx - targetX, curTileY + d.dy - targetY);
+          if (dist < bestDist) {
+            bestDist = dist;
+            bestDir = d;
+          }
+        }
+        g.dirX = bestDir.dx;
+        g.dirY = bestDir.dy;
+      }
+
+      // Advance in chosen direction
+      g.x += g.dirX * currentSpeed;
+      g.y += g.dirY * currentSpeed;
     }
 
-    g.x += g.dirX * currentSpeed;
-    g.y += g.dirY * currentSpeed;
-
-    // Wrapping tunnel
-    if (g.x < 0) g.x = canvas.width;
-    if (g.x > canvas.width) g.x = 0;
+    // Side wrap tunnel for ghosts
+    if (g.x < -8) {
+      g.x = canvas.width + 8;
+    } else if (g.x > canvas.width + 8) {
+      g.x = -8;
+    }
   }
 
   public draw() {
@@ -734,7 +868,7 @@ class GumdropPacmanGame {
     ctx.save();
     ctx.translate(g.x, g.y);
 
-    if (g.eaten) {
+    if (g.state === 'eaten') {
       // Floating eyeballs returning home
       ctx.fillStyle = EGA.white;
       ctx.fillRect(-6, -4, 5, 6);
@@ -749,7 +883,7 @@ class GumdropPacmanGame {
     // Ghost body colour
     let bodyCol = g.normalColour;
     if (g.frightened) {
-      // Flashing white when power mode is expiring (<100 ticks)
+      // Flashing white when power mode is expiring (<120 ticks)
       bodyCol =
         this.powerTimer < 120 && Math.floor(Date.now() / 150) % 2 === 0 ? EGA.white : EGA.blue;
     }
