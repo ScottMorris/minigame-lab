@@ -2,49 +2,195 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Cocoa Drop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cocoa Drop — Lieutenant Fizz 2</title>
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <style>
+      :root {
+        --ega-black: #000000;
+        --ega-blue: #0000aa;
+        --ega-green: #00aa00;
+        --ega-cyan: #00aaaa;
+        --ega-red: #aa0000;
+        --ega-magenta: #aa00aa;
+        --ega-brown: #aa5500;
+        --ega-light-grey: #aaaaaa;
+        --ega-dark-grey: #555555;
+        --ega-light-blue: #5555ff;
+        --ega-light-green: #55ff55;
+        --ega-light-cyan: #55ffff;
+        --ega-light-red: #ff5555;
+        --ega-light-magenta: #ff55ff;
+        --ega-yellow: #ffff55;
+        --ega-white: #ffffff;
+      }
+      * {
+        box-sizing: border-box;
+      }
       body {
         margin: 0;
-        background: #0b0a12;
-        overflow: hidden;
+        background: #07060a;
+        background-image:
+          radial-gradient(circle at 50% 20%, rgba(170, 0, 170, 0.15), transparent 60%),
+          linear-gradient(to bottom, #0d0a17 0%, #050408 100%);
+        color: #f5efe9;
+        font-family: ui-monospace, 'Cascadia Mono', Menlo, Consolas, monospace;
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
-        height: 100vh;
+        min-height: 100vh;
+        overflow-x: hidden;
+        user-select: none;
+      }
+
+      /* Arcade cabinet wrapper */
+      .cabinet {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: #14101e;
+        border: 4px solid #aa5500;
+        border-radius: 12px;
+        box-shadow:
+          0 0 0 3px #555555,
+          0 12px 36px rgba(0, 0, 0, 0.8),
+          0 0 24px rgba(255, 170, 64, 0.2);
+        padding: 16px 20px 20px 20px;
+        max-width: 95vw;
+      }
+
+      /* Top marquee */
+      .marquee {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #1f1830;
+        border: 2px solid #ffaa40;
+        border-radius: 6px;
+        padding: 6px 16px;
+        margin-bottom: 12px;
+        box-shadow: inset 0 0 12px rgba(255, 170, 64, 0.25);
+      }
+      .marquee h1 {
+        margin: 0;
+        font-size: 1.25rem;
+        letter-spacing: 2px;
+        color: #ffff55;
+        text-shadow:
+          2px 2px 0 #aa0000,
+          0 0 8px #ffaa40;
+      }
+      .marquee .sub {
+        font-size: 0.75rem;
+        color: #ff55ff;
+        letter-spacing: 1px;
+      }
+
+      /* Screen frame with CRT bevel */
+      .crt-frame {
+        position: relative;
+        background: #000;
+        padding: 8px;
+        border: 3px solid #555555;
+        border-radius: 8px;
+        box-shadow:
+          inset 0 0 20px rgba(0, 0, 0, 0.9),
+          0 0 10px rgba(0, 0, 0, 0.5);
       }
       canvas {
-        background: #000;
-        border: 4px solid #8b6851;
+        display: block;
+        background: #000000;
         image-rendering: pixelated;
-        width: 400px;
-        height: 800px;
+        image-rendering: crisp-edges;
+        border: 2px solid #332b4a;
       }
+
+      /* Bottom controls and coin ticker */
+      .cabinet-footer {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+        font-size: 0.75rem;
+        color: #aaaaaa;
+      }
+      .controls-pill {
+        background: #1f1830;
+        padding: 4px 10px;
+        border: 1px solid #555555;
+        border-radius: 4px;
+        color: #55ffff;
+      }
+      .coin-slot {
+        color: #55ff55;
+        font-weight: bold;
+        letter-spacing: 1px;
+        animation: blink 1.2s infinite;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
+      }
+
+      /* Return link */
       .back-link {
         position: absolute;
         top: 1rem;
         left: 1rem;
         color: #ffaa40;
         text-decoration: none;
-        font-family: monospace;
-        font-size: 1rem;
+        font-size: 0.85rem;
         font-weight: bold;
         padding: 0.4rem 0.8rem;
-        background: rgba(18, 14, 26, 0.85);
+        background: rgba(20, 16, 30, 0.85);
         border: 1px solid #ffaa40;
         border-radius: 6px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
         z-index: 10;
-        transition: background 0.15s ease;
+        transition:
+          background 0.15s ease,
+          transform 0.1s ease;
       }
       .back-link:hover {
         background: #ffaa40;
         color: #0b0a12;
+        transform: translateY(-1px);
       }
     </style>
   </head>
   <body>
     <a href="../../" class="back-link">← Hub</a>
-    <canvas id="game"></canvas>
+
+    <div class="cabinet">
+      <div class="marquee">
+        <div>
+          <h1>COCOA DROP</h1>
+          <span class="sub">CONFECTIONERY FOUNDRY</span>
+        </div>
+        <div class="controls-pill">EGA 16-COLOUR</div>
+      </div>
+
+      <div class="crt-frame">
+        <canvas id="game" width="600" height="640"></canvas>
+      </div>
+
+      <div class="cabinet-footer">
+        <div class="controls-pill">
+          ← →: SHIFT | ↑/X: ROTATE | ↓: DROP | SPACE: SLAM | C: HOLD | P: PAUSE
+        </div>
+        <div class="coin-slot">FREE PLAY</div>
+      </div>
+    </div>
+
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
