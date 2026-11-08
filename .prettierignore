@@ -1,0 +1,12 @@
+target/
+node_modules/
+dist/
+dist-site/
+docs/
+*.lock
+bun.lock
+*.md
+LICENSE*
+assets/
+.github/
+web/style.css

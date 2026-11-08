@@ -1,0 +1,192 @@
+# Runs granular code quality, formatting, lint, type-check, tests and build checks on every change.
+#
+# (c) Copyright 2026 Liminal HQ, Scott Morris
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  rust-format:
+    name: Rust format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install the pinned Rust toolchain
+        run: rustup toolchain install
+      - name: Check Rust formatting
+        id: format
+        run: cargo fmt --all -- --check
+      - name: Job summary
+        if: always()
+        run: |
+          {
+            echo "## Rust format"
+            echo "- Result: \`${{ steps.format.outcome }}\`"
+            echo "- Command: \`cargo fmt --all -- --check\`"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+  rust-clippy:
+    name: Rust Clippy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install the pinned Rust toolchain
+        run: |
+          rustup toolchain install
+          rustup target add wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+      - name: Run Clippy
+        id: clippy
+        run: cargo clippy --workspace --all-targets -- -D warnings
+      - name: Job summary
+        if: always()
+        run: |
+          {
+            echo "## Rust Clippy"
+            echo "- Result: \`${{ steps.clippy.outcome }}\`"
+            echo "- Command: \`cargo clippy --workspace --all-targets -- -D warnings\`"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+  rust-tests:
+    name: Rust tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install the pinned Rust toolchain
+        run: rustup toolchain install
+      - uses: Swatinem/rust-cache@v2
+      - name: Run tests
+        id: tests
+        run: cargo test --workspace
+      - name: Job summary
+        if: always()
+        run: |
+          {
+            echo "## Rust tests"
+            echo "- Result: \`${{ steps.tests.outcome }}\`"
+            echo "- Command: \`cargo test --workspace\`"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+  format:
+    name: Prettier format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.10
+      - run: bun install --frozen-lockfile
+      - name: Check Prettier formatting
+        id: format
+        run: bunx prettier --check .
+      - name: Job summary
+        if: always()
+        run: |
+          {
+            echo "## Prettier format"
+            echo "- Result: \`${{ steps.format.outcome }}\`"
+            echo "- Command: \`bunx prettier --check .\`"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+  lint:
+    name: ESLint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.10
+      - run: bun install --frozen-lockfile
+      - name: Run ESLint
+        id: lint
+        run: bun run lint
+      - name: Job summary
+        if: always()
+        run: |
+          {
+            echo "## ESLint"
+            echo "- Result: \`${{ steps.lint.outcome }}\`"
+            echo "- Command: \`bun run lint\`"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+  typecheck:
+    name: TypeScript type check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.10
+      - run: bun install --frozen-lockfile
+      - name: Type check
+        id: typecheck
+        run: bun run typecheck
+      - name: Job summary
+        if: always()
+        run: |
+          {
+            echo "## TypeScript type check"
+            echo "- Result: \`${{ steps.typecheck.outcome }}\`"
+            echo "- Command: \`bun run typecheck\`"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+  wasm-build:
+    name: WASM build check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install the pinned Rust toolchain
+        run: |
+          rustup toolchain install
+          rustup target add wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+      - name: Check WASM build
+        id: wasm
+        run: cargo check --workspace --target wasm32-unknown-unknown
+      - name: Job summary
+        if: always()
+        run: |
+          {
+            echo "## WASM build check"
+            echo "- Result: \`${{ steps.wasm.outcome }}\`"
+            echo "- Command: \`cargo check --workspace --target wasm32-unknown-unknown\`"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+  web-build:
+    name: Web site build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.10
+      - name: Install the pinned Rust toolchain
+        run: |
+          rustup toolchain install
+          rustup target add wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+      - run: bun install --frozen-lockfile
+      - name: Build complete site
+        id: build
+        run: bun run build
+      - name: Job summary
+        if: always()
+        run: |
+          {
+            echo "## Web site build"
+            echo "- Result: \`${{ steps.build.outcome }}\`"
+            echo "- Command: \`bun run build\`"
+          } >> "${GITHUB_STEP_SUMMARY}"
