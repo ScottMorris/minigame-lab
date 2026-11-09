@@ -62,6 +62,7 @@ async function main() {
     { name: 'gloop-slugger', path: '/games/gloop-slugger/' },
     { name: 'gumdrop-pacman', path: '/games/gumdrop-pacman/' },
     { name: 'pogo-panic', path: '/games/pogo-panic/' },
+    { name: 'fizz-pong', path: '/games/fizz-pong/' },
   ];
 
   let errorsFound = 0;

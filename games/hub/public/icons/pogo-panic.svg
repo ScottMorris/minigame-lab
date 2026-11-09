@@ -1,0 +1,45 @@
+<!-- Arcade cartridge badge for Pogo Panic in 16-colour EGA palette. -->
+<!-- -->
+<!-- (c) Copyright 2026 Liminal HQ, Scott Morris -->
+<!-- SPDX-License-Identifier: Apache-2.0 OR MIT -->
+<svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pogo Panic badge">
+  <!-- Bezel -->
+  <rect width="80" height="80" rx="10" fill="#000000" stroke="#55ff55" stroke-width="2"/>
+  <rect x="4" y="4" width="72" height="72" rx="8" fill="#000000" stroke="#00aa00" stroke-width="1"/>
+  <!-- Corner bolts -->
+  <rect x="6" y="6" width="2" height="2" fill="#ffffff"/>
+  <rect x="72" y="6" width="2" height="2" fill="#ffffff"/>
+  <rect x="6" y="72" width="2" height="2" fill="#ffffff"/>
+  <rect x="72" y="72" width="2" height="2" fill="#ffffff"/>
+
+  <!-- Ben Blaze Pogo Jump Icon -->
+  <g transform="translate(26, 12) scale(2)">
+    <!-- Helmet -->
+    <rect x="4" y="0" width="6" height="2" fill="#55ff55"/>
+    <rect x="6" y="0" width="2" height="2" fill="#ffffff"/>
+    <rect x="3" y="2" width="8" height="3" fill="#ffffff"/>
+    <rect x="7" y="3" width="2" height="2" fill="#0000aa"/>
+    <!-- Shirt -->
+    <rect x="4" y="5" width="6" height="4" fill="#ff5555"/>
+    <!-- Pants -->
+    <rect x="5" y="9" width="4" height="3" fill="#5555ff"/>
+    <!-- Pogo Stick -->
+    <rect x="6" y="12" width="2" height="8" fill="#aaaaaa"/>
+    <rect x="4" y="14" width="6" height="2" fill="#555555"/>
+    <!-- Spring -->
+    <rect x="5" y="20" width="4" height="3" fill="#aaaaaa"/>
+    <rect x="6" y="23" width="2" height="1" fill="#000000"/>
+  </g>
+
+  <!-- Crumbly Chocolate Platform -->
+  <rect x="18" y="56" width="44" height="5" fill="#aa5500"/>
+  <rect x="22" y="61" width="10" height="2" fill="#555555"/>
+
+  <!-- Impact Sparks -->
+  <rect x="34" y="54" width="3" height="2" fill="#ffff55"/>
+  <rect x="43" y="54" width="3" height="2" fill="#ffff55"/>
+
+  <!-- Game title label -->
+  <rect x="16" y="64" width="48" height="10" fill="#00aa00"/>
+  <text x="40" y="72" font-family="monospace" font-weight="bold" font-size="7" fill="#55ff55" text-anchor="middle" letter-spacing="1">POGO PANIC</text>
+</svg>

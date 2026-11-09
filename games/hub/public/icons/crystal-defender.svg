@@ -1,0 +1,42 @@
+<!-- Arcade cartridge badge for Crystal Defender in 16-colour EGA palette. -->
+<!-- -->
+<!-- (c) Copyright 2026 Liminal HQ, Scott Morris -->
+<!-- SPDX-License-Identifier: Apache-2.0 OR MIT -->
+<svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Crystal Defender badge">
+  <!-- Bezel -->
+  <rect width="80" height="80" rx="10" fill="#000000" stroke="#55ffff" stroke-width="2"/>
+  <rect x="4" y="4" width="72" height="72" rx="8" fill="#000000" stroke="#0000aa" stroke-width="1"/>
+  <!-- Corner bolts -->
+  <rect x="6" y="6" width="2" height="2" fill="#ffffff"/>
+  <rect x="72" y="6" width="2" height="2" fill="#ffffff"/>
+  <rect x="6" y="72" width="2" height="2" fill="#ffffff"/>
+  <rect x="72" y="72" width="2" height="2" fill="#ffffff"/>
+
+  <!-- Distant Stars -->
+  <rect x="16" y="16" width="2" height="2" fill="#ffffff"/>
+  <rect x="66" y="22" width="2" height="2" fill="#55ffff"/>
+  <rect x="22" y="52" width="2" height="2" fill="#aaaaaa"/>
+
+  <!-- Defender Thruster Ship -->
+  <g transform="translate(18, 30)">
+    <!-- Rocket thrust flame -->
+    <polygon points="-6,7 0,4 0,10" fill="#ff5555"/>
+    <polygon points="-4,7 0,5 0,9" fill="#ffff55"/>
+    <!-- Ship Hull -->
+    <polygon points="16,7 0,0 4,7 0,14" fill="#ffffff" stroke="#00aaaa" stroke-width="1.5"/>
+    <circle cx="6" cy="7" r="2" fill="#55ffff"/>
+    <!-- Blaster laser stream -->
+    <line x1="18" y1="7" x2="30" y2="7" stroke="#55ffff" stroke-width="2"/>
+  </g>
+
+  <!-- Faceted Crystal Boulder Asteroid -->
+  <g transform="translate(50, 24)">
+    <polygon points="10,0 20,6 18,18 8,20 0,12" fill="#55ffff" stroke="#0000aa" stroke-width="2"/>
+    <polygon points="10,4 16,8 14,14 8,14" fill="#ffffff"/>
+    <circle cx="2" cy="22" r="1.5" fill="#55ffff"/>
+  </g>
+
+  <!-- Game title label -->
+  <rect x="12" y="64" width="56" height="10" fill="#0000aa"/>
+  <text x="40" y="72" font-family="monospace" font-weight="bold" font-size="7" fill="#55ffff" text-anchor="middle" letter-spacing="1">CRYSTAL DEF</text>
+</svg>

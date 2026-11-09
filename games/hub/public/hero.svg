@@ -1,0 +1,757 @@
+<!-- Hero banner for Mini Game Lab, rendered in the authentic 16-colour EGA palette. -->
+<!-- -->
+<!-- (c) Copyright 2026 Liminal HQ, Scott Morris -->
+<!-- SPDX-License-Identifier: Apache-2.0 OR MIT -->
+<svg width="1200" height="320" viewBox="0 0 1200 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="hero-title hero-desc">
+  <title id="hero-title">Mini Game Lab — Lieutenant Fizz 2</title>
+  <desc id="hero-desc">Mini Game Lab: twelve retro arcade experiments built on the Lieutenant Fizz 2 engine in authentic 16-colour EGA palette.</desc>
+
+  <style>
+    @media (prefers-reduced-motion: reduce) {
+      .motion-animated {
+        animation: none !important;
+      }
+      animate, animateTransform, animateMotion {
+        display: none !important;
+      }
+    }
+    text {
+      font-family: 'JetBrains Mono', 'DejaVu Sans Mono', Menlo, Consolas, 'Courier New', monospace;
+      font-weight: bold;
+      paint-order: stroke fill;
+    }
+  </style>
+
+  <defs>
+    <!-- Authentic 16-colour EGA palette:
+         #000000 (black), #0000aa (blue), #00aa00 (green), #00aaaa (cyan),
+         #aa0000 (red), #aa00aa (magenta), #aa5500 (brown), #aaaaaa (light grey),
+         #555555 (dark grey), #5555ff (light blue), #55ff55 (light green), #55ffff (light cyan),
+         #ff5555 (light red), #ff55ff (light magenta), #ffff55 (yellow), #ffffff (white). -->
+
+    <!-- 50% checkerboard dither patterns -->
+    <pattern id="dither-blue" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="4" height="4" fill="#0000aa"/>
+      <rect x="0" y="0" width="2" height="2" fill="#5555ff"/>
+      <rect x="2" y="2" width="2" height="2" fill="#5555ff"/>
+    </pattern>
+
+    <pattern id="dither-blue-dark" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="4" height="4" fill="#000000"/>
+      <rect x="0" y="0" width="2" height="2" fill="#0000aa"/>
+      <rect x="2" y="2" width="2" height="2" fill="#0000aa"/>
+    </pattern>
+
+    <pattern id="dither-cyan" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="2" height="2" fill="#55ffff"/>
+      <rect x="2" y="2" width="2" height="2" fill="#55ffff"/>
+    </pattern>
+
+    <pattern id="dither-cyan-dark" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="4" height="4" fill="#000000"/>
+      <rect x="0" y="0" width="2" height="2" fill="#00aaaa"/>
+      <rect x="2" y="2" width="2" height="2" fill="#00aaaa"/>
+    </pattern>
+
+    <pattern id="dither-cyan-full" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="4" height="4" fill="#00aaaa"/>
+      <rect x="0" y="0" width="2" height="2" fill="#55ffff"/>
+      <rect x="2" y="2" width="2" height="2" fill="#55ffff"/>
+    </pattern>
+
+    <pattern id="dither-magenta" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="4" height="4" fill="#aa00aa"/>
+      <rect x="0" y="0" width="2" height="2" fill="#ff55ff"/>
+      <rect x="2" y="2" width="2" height="2" fill="#ff55ff"/>
+    </pattern>
+
+    <pattern id="dither-magenta-dark" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="4" height="4" fill="#000000"/>
+      <rect x="0" y="0" width="2" height="2" fill="#aa00aa"/>
+      <rect x="2" y="2" width="2" height="2" fill="#aa00aa"/>
+    </pattern>
+
+    <pattern id="dither-green" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="4" height="4" fill="#00aa00"/>
+      <rect x="0" y="0" width="2" height="2" fill="#55ff55"/>
+      <rect x="2" y="2" width="2" height="2" fill="#55ff55"/>
+    </pattern>
+
+    <pattern id="dither-yellow" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="4" height="4" fill="#aa5500"/>
+      <rect x="0" y="0" width="2" height="2" fill="#ffff55"/>
+      <rect x="2" y="2" width="2" height="2" fill="#ffff55"/>
+    </pattern>
+
+    <pattern id="dither-grey" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="4" height="4" fill="#555555"/>
+      <rect x="0" y="0" width="2" height="2" fill="#aaaaaa"/>
+      <rect x="2" y="2" width="2" height="2" fill="#aaaaaa"/>
+    </pattern>
+
+    <pattern id="dither-grey-dark" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="4" height="4" fill="#000000"/>
+      <rect x="0" y="0" width="2" height="2" fill="#555555"/>
+      <rect x="2" y="2" width="2" height="2" fill="#555555"/>
+    </pattern>
+
+    <pattern id="dither-red" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="4" height="4" fill="#aa0000"/>
+      <rect x="0" y="0" width="2" height="2" fill="#ff5555"/>
+      <rect x="2" y="2" width="2" height="2" fill="#ff5555"/>
+    </pattern>
+
+    <clipPath id="frame">
+      <rect width="1200" height="320" rx="16"/>
+    </clipPath>
+
+    <clipPath id="screen-clip">
+      <rect x="480" y="12" width="708" height="296" rx="8"/>
+    </clipPath>
+
+    <clipPath id="well-clip">
+      <rect x="608" y="96" width="56" height="136"/>
+    </clipPath>
+  </defs>
+
+  <!-- Root background -->
+  <rect width="1200" height="320" rx="16" fill="#000000"/>
+
+  <g clip-path="url(#frame)" shape-rendering="crispEdges">
+    <!-- ============================================================== -->
+    <!-- LEFT PANEL: ARCADE CABINET MARQUEE & AUTHENTIC TYPOGRAPHY    -->
+    <!-- ============================================================== -->
+    <g>
+      <!-- Outer marquee bezel -->
+      <rect x="12" y="12" width="456" height="296" rx="10" fill="#000000" stroke="#0000aa" stroke-width="4"/>
+      <rect x="18" y="18" width="444" height="284" rx="8" fill="#000000" stroke="#555555" stroke-width="2"/>
+
+      <!-- Corner chassis bolts -->
+      <rect x="24" y="24" width="4" height="4" fill="#aaaaaa"/>
+      <rect x="25" y="25" width="2" height="2" fill="#ffffff"/>
+      <rect x="452" y="24" width="4" height="4" fill="#aaaaaa"/>
+      <rect x="453" y="25" width="2" height="2" fill="#ffffff"/>
+      <rect x="24" y="292" width="4" height="4" fill="#aaaaaa"/>
+      <rect x="25" y="293" width="2" height="2" fill="#ffffff"/>
+      <rect x="452" y="292" width="4" height="4" fill="#aaaaaa"/>
+      <rect x="453" y="293" width="2" height="2" fill="#ffffff"/>
+
+      <!-- Top arcade header -->
+      <text x="32" y="44" font-size="11" fill="#ffff55" letter-spacing="3">★ LIMINAL ARCADE SYSTEMS ★</text>
+
+      <!-- Main Title: MINI GAME LAB with 3D drop-shadow -->
+      <text x="35" y="93" font-size="42" fill="#0000aa" letter-spacing="2">MINI GAME LAB</text>
+      <text x="33" y="91" font-size="42" fill="#aa0000" letter-spacing="2">MINI GAME LAB</text>
+      <text x="32" y="90" font-size="42" fill="#ffffff" letter-spacing="2">MINI GAME LAB</text>
+
+      <!-- Engine Subtitle: LIEUTENANT FIZZ 2 -->
+      <text x="34" y="126" font-size="20" fill="#aa5500" letter-spacing="5">LIEUTENANT FIZZ 2</text>
+      <text x="32" y="124" font-size="20" fill="#ffff55" letter-spacing="5">LIEUTENANT FIZZ 2</text>
+
+      <!-- Expansion Tagline -->
+      <text x="32" y="154" font-size="13" fill="#55ffff" letter-spacing="2">TWELVE ARCADE EXPERIMENTS</text>
+
+      <!-- Technical Spec -->
+      <text x="32" y="174" font-size="10" fill="#aaaaaa" letter-spacing="1">DETERMINISTIC SIMULATION · NO_STD · 60 HZ</text>
+
+      <!-- Row 1 Badges: WEB, RUST, WASM, UNDERTONE, EGA 16 -->
+      <g transform="translate(32, 188)" font-size="11" letter-spacing="1">
+        <!-- WEB -->
+        <rect x="0" y="0" width="52" height="22" fill="#0000aa" stroke="#55ffff" stroke-width="2"/>
+        <text x="13" y="15" fill="#55ffff">WEB</text>
+
+        <!-- RUST -->
+        <rect x="60" y="0" width="60" height="22" fill="#aa5500" stroke="#ffff55" stroke-width="2"/>
+        <text x="71" y="15" fill="#ffff55">RUST</text>
+
+        <!-- WASM -->
+        <rect x="128" y="0" width="60" height="22" fill="#aa00aa" stroke="#ff55ff" stroke-width="2"/>
+        <text x="139" y="15" fill="#ff55ff">WASM</text>
+
+        <!-- UNDERTONE -->
+        <rect x="196" y="0" width="104" height="22" fill="#00aa00" stroke="#55ff55" stroke-width="2"/>
+        <text x="207" y="15" fill="#55ff55">UNDERTONE</text>
+
+        <!-- EGA 16 -->
+        <rect x="308" y="0" width="76" height="22" fill="#555555" stroke="#ffffff" stroke-width="2"/>
+        <text x="318" y="15" fill="#ffffff">EGA 16</text>
+      </g>
+
+      <!-- Row 2 Badges: CANVAS 2D, DETERMINISTIC, 100% RETRO -->
+      <g transform="translate(32, 218)" font-size="10" letter-spacing="1">
+        <!-- CANVAS 2D -->
+        <rect x="0" y="0" width="94" height="20" fill="#000000" stroke="#5555ff" stroke-width="2"/>
+        <text x="10" y="14" fill="#5555ff">CANVAS 2D</text>
+
+        <!-- DETERMINISTIC -->
+        <rect x="102" y="0" width="128" height="20" fill="#000000" stroke="#00aaaa" stroke-width="2"/>
+        <text x="110" y="14" fill="#55ffff">DETERMINISTIC</text>
+
+        <!-- 100% RETRO -->
+        <rect x="238" y="0" width="96" height="20" fill="#aa0000" stroke="#ff5555" stroke-width="2"/>
+        <text x="246" y="14" fill="#ffff55">100% RETRO</text>
+      </g>
+
+      <!-- CRT Arcade Prompt with blinking cursor -->
+      <g transform="translate(32, 260)">
+        <rect x="0" y="0" width="414" height="26" fill="#000000" stroke="#00aa00" stroke-width="1"/>
+        <text x="10" y="17" font-size="11" fill="#55ff55" letter-spacing="1">INSERT COIN [12 GAMES READY] · FREE PLAY </text>
+        <rect x="358" y="6" width="8" height="14" fill="#ffffff">
+          <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/>
+        </rect>
+      </g>
+    </g>
+
+    <!-- ============================================================== -->
+    <!-- VERTICAL DIVIDER SEAM & NEON CONDUIT                           -->
+    <!-- ============================================================== -->
+    <g transform="translate(468, 12)">
+      <rect x="0" y="0" width="12" height="296" fill="#555555"/>
+      <rect x="3" y="0" width="6" height="296" fill="#0000aa"/>
+      <rect x="5" y="0" width="2" height="296" fill="#55ffff"/>
+      <!-- Neon indicator nodes -->
+      <circle cx="6" cy="40" r="3" fill="#55ffff"/>
+      <circle cx="6" cy="100" r="3" fill="#ffff55"/>
+      <circle cx="6" cy="160" r="3" fill="#ff55ff"/>
+      <circle cx="6" cy="220" r="3" fill="#55ff55"/>
+      <circle cx="6" cy="275" r="3" fill="#55ffff"/>
+    </g>
+
+    <!-- ============================================================== -->
+    <!-- RIGHT SCREEN: 12-GAME ARCADE PANORAMA                          -->
+    <!-- ============================================================== -->
+    <g clip-path="url(#screen-clip)">
+      <!-- Screen outer frame & CRT background -->
+      <rect x="480" y="12" width="708" height="296" fill="#000000"/>
+
+      <!-- Cosmic Dusk Atmosphere & EGA Sky Dithers -->
+      <rect x="480" y="130" width="708" height="36" fill="url(#dither-blue-dark)"/>
+      <rect x="480" y="166" width="708" height="34" fill="url(#dither-blue)"/>
+      <rect x="480" y="200" width="708" height="36" fill="#0000aa"/>
+
+      <!-- Distant Stars (Twinkling & Static) -->
+      <g>
+        <rect x="510" y="24" width="3" height="3" fill="#aaaaaa"/>
+        <rect x="590" y="86" width="4" height="4" fill="#ffffff"/>
+        <rect x="670" y="22" width="3" height="3" fill="#55ffff"/>
+        <rect x="740" y="84" width="4" height="4" fill="#aaaaaa"/>
+        <rect x="860" y="24" width="4" height="4" fill="#ffffff"/>
+        <rect x="915" y="80" width="3" height="3" fill="#55ffff"/>
+        <rect x="1005" y="26" width="3" height="3" fill="#aaaaaa"/>
+        <rect x="1050" y="92" width="4" height="4" fill="#ffffff"/>
+        <rect x="1160" y="82" width="3" height="3" fill="#aaaaaa"/>
+      </g>
+      <!-- Pulsing animated stars -->
+      <g fill="#ffff55">
+        <rect x="546" y="88" width="5" height="5">
+          <animate attributeName="opacity" values="1;0.2;1" dur="2.1s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="790" y="30" width="5" height="5">
+          <animate attributeName="opacity" values="0.2;1;0.2" dur="2.8s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="948" y="22" width="5" height="5">
+          <animate attributeName="opacity" values="1;0.3;1" dur="1.9s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="1140" y="32" width="5" height="5">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+      </g>
+
+      <!-- Planet Zargoth in upper sky -->
+      <g transform="translate(1085, 46)">
+        <!-- Planetary disc -->
+        <circle cx="16" cy="16" r="16" fill="#aa00aa" shape-rendering="geometricPrecision"/>
+        <path d="M16,0 A16,16 0 0,1 32,16 A16,16 0 0,1 16,32 Z" fill="url(#dither-magenta-dark)" shape-rendering="geometricPrecision"/>
+        <circle cx="10" cy="10" r="3" fill="#555555" shape-rendering="geometricPrecision"/>
+        <circle cx="20" cy="22" r="2" fill="#555555" shape-rendering="geometricPrecision"/>
+        <!-- Ring -->
+        <ellipse cx="16" cy="16" rx="26" ry="7" fill="none" stroke="#ffff55" stroke-width="2" transform="rotate(-20 16 16)" shape-rendering="geometricPrecision"/>
+        <ellipse cx="16" cy="16" rx="24" ry="5" fill="none" stroke="#aa5500" stroke-width="1" transform="rotate(-20 16 16)" shape-rendering="geometricPrecision"/>
+      </g>
+
+      <!-- Terrain: Planet Zargoth Cocoa Fields Crust & Bedrock -->
+      <g>
+        <!-- Bedrock -->
+        <rect x="480" y="260" width="708" height="48" fill="#555555"/>
+        <rect x="520" y="280" width="120" height="6" fill="#000000"/>
+        <rect x="740" y="288" width="80" height="8" fill="#000000"/>
+        <rect x="940" y="282" width="140" height="6" fill="#000000"/>
+        <!-- Cocoa soil crust -->
+        <rect x="480" y="238" width="708" height="22" fill="#aa5500"/>
+        <rect x="480" y="246" width="708" height="6" fill="url(#dither-yellow)"/>
+        <!-- Green moss surface line -->
+        <rect x="480" y="235" width="708" height="3" fill="#00aa00"/>
+        <!-- Pixel moss tufts -->
+        <rect x="500" y="233" width="4" height="2" fill="#55ff55"/>
+        <rect x="560" y="233" width="6" height="2" fill="#55ff55"/>
+        <rect x="630" y="233" width="4" height="2" fill="#55ff55"/>
+        <rect x="730" y="233" width="6" height="2" fill="#55ff55"/>
+        <rect x="850" y="233" width="4" height="2" fill="#55ff55"/>
+        <rect x="990" y="233" width="6" height="2" fill="#55ff55"/>
+        <rect x="1130" y="233" width="4" height="2" fill="#55ff55"/>
+      </g>
+
+      <!-- ============================================================ -->
+      <!-- GAME 1: DEFRAG THE MAINFRAME (Terminal grid & cluster-worm)  -->
+      <!-- ============================================================ -->
+      <g transform="translate(492, 28)">
+        <!-- Terminal frame -->
+        <rect x="0" y="0" width="98" height="66" fill="#000000" stroke="#5555ff" stroke-width="2"/>
+        <rect x="0" y="0" width="98" height="12" fill="#0000aa"/>
+        <text x="4" y="9" font-size="8" fill="#55ffff" letter-spacing="1">DEFRAG [C:]</text>
+        <!-- Cluster matrix: 7 cols x 4 rows -->
+        <g transform="translate(4, 16)">
+          <!-- Row 0: green, green, green, red, green, grey, green -->
+          <rect x="0" y="0" width="10" height="8" fill="#55ff55"/>
+          <rect x="13" y="0" width="10" height="8" fill="#55ff55"/>
+          <rect x="26" y="0" width="10" height="8" fill="#55ff55"/>
+          <rect x="39" y="0" width="10" height="8" fill="#ff5555"/>
+          <rect x="52" y="0" width="10" height="8" fill="#55ff55"/>
+          <rect x="65" y="0" width="10" height="8" fill="#555555"/>
+          <rect x="78" y="0" width="10" height="8" fill="#55ff55"/>
+          <!-- Row 1: green, red, grey, green, green, red, cyan -->
+          <rect x="0" y="11" width="10" height="8" fill="#55ff55"/>
+          <rect x="13" y="11" width="10" height="8" fill="#ff5555"/>
+          <rect x="26" y="11" width="10" height="8" fill="#555555"/>
+          <rect x="39" y="11" width="10" height="8" fill="#55ff55"/>
+          <rect x="52" y="11" width="10" height="8" fill="#55ff55"/>
+          <rect x="65" y="11" width="10" height="8" fill="#ff5555"/>
+          <rect x="78" y="11" width="10" height="8" fill="#55ffff"/>
+          <!-- Row 2: cyan, cyan, green, green, yellow(active), grey, grey -->
+          <rect x="0" y="22" width="10" height="8" fill="#55ffff"/>
+          <rect x="13" y="22" width="10" height="8" fill="#55ffff"/>
+          <rect x="26" y="22" width="10" height="8" fill="#55ff55"/>
+          <rect x="39" y="22" width="10" height="8" fill="#55ff55"/>
+          <!-- Active head block pulsing -->
+          <rect x="52" y="22" width="10" height="8" fill="#ffff55">
+            <animate attributeName="fill" values="#ffff55;#ffffff;#ffff55" dur="0.8s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="65" y="22" width="10" height="8" fill="#555555"/>
+          <rect x="78" y="22" width="10" height="8" fill="#555555"/>
+          <!-- Row 3: grey, grey, grey, grey, grey, grey, grey -->
+          <rect x="0" y="33" width="10" height="8" fill="#555555"/>
+          <rect x="13" y="33" width="10" height="8" fill="#555555"/>
+          <rect x="26" y="33" width="10" height="8" fill="#555555"/>
+          <rect x="39" y="33" width="10" height="8" fill="#555555"/>
+          <rect x="52" y="33" width="10" height="8" fill="#555555"/>
+          <rect x="65" y="33" width="10" height="8" fill="#555555"/>
+          <rect x="78" y="33" width="10" height="8" fill="#555555"/>
+        </g>
+        <!-- Cluster-worm navigating defrag sectors -->
+        <g transform="translate(4, 59)">
+          <animateTransform attributeName="transform" type="translate" values="4,59; 20,59; 4,59" dur="2.4s" calcMode="discrete" repeatCount="indefinite"/>
+          <rect x="0" y="0" width="6" height="4" fill="#ffff55"/>
+          <rect x="7" y="0" width="6" height="4" fill="#ff5555"/>
+          <rect x="14" y="0" width="6" height="4" fill="#ffff55"/>
+          <rect x="21" y="0" width="6" height="4" fill="#55ff55"/>
+          <rect x="25" y="1" width="2" height="2" fill="#000000"/>
+        </g>
+      </g>
+
+      <!-- ============================================================ -->
+      <!-- GAME 2: SODA SNAKE: THE LAST STRAW (Straw snake & bubble)     -->
+      <!-- ============================================================ -->
+      <g transform="translate(492, 172)">
+        <!-- Ledge platform -->
+        <rect x="0" y="44" width="96" height="6" fill="#aa5500" stroke="#555555" stroke-width="1"/>
+        <!-- Segmented soda straw snake -->
+        <g>
+          <!-- Tail segments: alternating red and white diagonal barber-pole stripes -->
+          <rect x="4" y="34" width="8" height="8" fill="#ff5555"/>
+          <rect x="12" y="34" width="8" height="8" fill="#ffffff"/>
+          <rect x="20" y="34" width="8" height="8" fill="#ff5555"/>
+          <rect x="28" y="26" width="8" height="8" fill="#ffffff"/>
+          <rect x="36" y="26" width="8" height="8" fill="#ff5555"/>
+          <!-- Accordion flex bend section -->
+          <rect x="44" y="26" width="4" height="8" fill="#aaaaaa"/>
+          <rect x="48" y="26" width="4" height="8" fill="#ffffff"/>
+          <rect x="52" y="26" width="4" height="8" fill="#aaaaaa"/>
+          <!-- Snake Head -->
+          <rect x="56" y="24" width="14" height="10" fill="#ff5555"/>
+          <rect x="62" y="26" width="4" height="4" fill="#ffffff"/>
+          <rect x="64" y="27" width="2" height="2" fill="#000000"/>
+          <!-- Forked flicking tongue -->
+          <g>
+            <animateTransform attributeName="transform" type="translate" values="0,0; 4,0; 0,0" dur="0.6s" repeatCount="indefinite"/>
+            <path d="M70,29 L76,27 M70,29 L76,31" stroke="#ff55ff" stroke-width="2"/>
+          </g>
+        </g>
+        <!-- Fizzy Lemon Carbonation Orb the snake is chasing -->
+        <g transform="translate(84, 25)">
+          <circle cx="5" cy="5" r="5" fill="#ffff55"/>
+          <circle cx="4" cy="4" r="2" fill="#ffffff"/>
+          <circle cx="8" cy="2" r="1" fill="#ffffff"/>
+        </g>
+      </g>
+
+      <!-- ============================================================ -->
+      <!-- GAME 3: FIZZ INVADERS (Stepping Zarg Invaders & Plasma Bomb)  -->
+      <!-- ============================================================ -->
+      <g class="motion-animated">
+        <animateTransform attributeName="transform" type="translate" values="0,0; 12,0; 24,0; 12,0; 0,0" dur="2s" calcMode="discrete" repeatCount="indefinite"/>
+        <!-- Invader 1: Magenta Crab (x: 608) -->
+        <g transform="translate(608, 32) scale(2)">
+          <rect x="2" y="0" width="4" height="1" fill="#ff55ff"/>
+          <rect x="1" y="1" width="6" height="1" fill="#aa00aa"/>
+          <rect x="0" y="2" width="8" height="2" fill="#ff55ff"/>
+          <rect x="2" y="2" width="1" height="1" fill="#000000"/>
+          <rect x="5" y="2" width="1" height="1" fill="#000000"/>
+          <rect x="1" y="4" width="2" height="2" fill="#aa00aa"/>
+          <rect x="5" y="4" width="2" height="2" fill="#aa00aa"/>
+        </g>
+        <!-- Invader 2: Cyan Squid (x: 642) -->
+        <g transform="translate(642, 32) scale(2)">
+          <rect x="2" y="0" width="4" height="1" fill="#55ffff"/>
+          <rect x="1" y="1" width="6" height="1" fill="#00aaaa"/>
+          <rect x="0" y="2" width="8" height="2" fill="#55ffff"/>
+          <rect x="2" y="2" width="1" height="1" fill="#000000"/>
+          <rect x="5" y="2" width="1" height="1" fill="#000000"/>
+          <rect x="0" y="4" width="2" height="2" fill="#00aaaa"/>
+          <rect x="6" y="4" width="2" height="2" fill="#00aaaa"/>
+        </g>
+        <!-- Invader 3: Yellow Commander (x: 676) -->
+        <g transform="translate(676, 32) scale(2)">
+          <rect x="3" y="0" width="2" height="1" fill="#ffff55"/>
+          <rect x="1" y="1" width="6" height="1" fill="#aa5500"/>
+          <rect x="0" y="2" width="8" height="2" fill="#ffff55"/>
+          <rect x="2" y="2" width="1" height="1" fill="#aa0000"/>
+          <rect x="5" y="2" width="1" height="1" fill="#aa0000"/>
+          <rect x="2" y="4" width="4" height="2" fill="#aa5500"/>
+        </g>
+        <!-- Falling Zarg plasma bomb -->
+        <g transform="translate(648, 50)">
+          <animateTransform attributeName="transform" type="translate" values="0,0; 0,28; 0,0" dur="1.2s" repeatCount="indefinite"/>
+          <rect x="0" y="0" width="2" height="6" fill="#ff5555"/>
+          <rect x="0" y="2" width="2" height="2" fill="#ffffff"/>
+        </g>
+      </g>
+
+      <!-- ============================================================ -->
+      <!-- GAME 4: COCOA DROP (Falling block match-3 well)              -->
+      <!-- ============================================================ -->
+      <g transform="translate(608, 92)">
+        <!-- Matrix well frame -->
+        <rect x="0" y="0" width="56" height="142" fill="#000000" stroke="#5555ff" stroke-width="2"/>
+        <rect x="2" y="2" width="52" height="138" fill="url(#dither-blue-dark)"/>
+
+        <!-- Well contents (Clipped) -->
+        <g clip-path="url(#well-clip)">
+          <!-- Grounded stacked blocks -->
+          <!-- Bottom row -->
+          <rect x="6" y="116" width="20" height="20" fill="#aa5500" stroke="#555555" stroke-width="2"/>
+          <rect x="30" y="116" width="20" height="20" fill="#55ffff" stroke="#00aaaa" stroke-width="2"/>
+          <!-- Row 2 -->
+          <rect x="6" y="92" width="20" height="20" fill="#ffff55" stroke="#aa5500" stroke-width="2"/>
+          <rect x="30" y="92" width="20" height="20" fill="#ff55ff" stroke="#aa00aa" stroke-width="2"/>
+          <!-- Row 3 -->
+          <rect x="6" y="68" width="20" height="20" fill="#aa5500" stroke="#555555" stroke-width="2"/>
+
+          <!-- Falling Block Pair -->
+          <g>
+            <animateTransform attributeName="transform" type="translate" values="0,0; 0,64; 0,0" dur="2.4s" repeatCount="indefinite"/>
+            <rect x="30" y="4" width="20" height="20" fill="#ff5555" stroke="#aa0000" stroke-width="2"/>
+            <rect x="30" y="28" width="20" height="20" fill="#55ffff" stroke="#00aaaa" stroke-width="2"/>
+          </g>
+        </g>
+      </g>
+
+      <!-- ============================================================ -->
+      <!-- GAME 5: HEX LOCK & PIXEL PATCH (Cyber nodes & glitch tiles)  -->
+      <!-- ============================================================ -->
+      <g transform="translate(680, 114)">
+        <!-- HEX LOCK: Neon Hexagonal Node -->
+        <g transform="translate(18, 16)">
+          <!-- Rotating central hex -->
+          <polygon points="16,0 30,8 30,24 16,32 2,24 2,8" fill="#000000" stroke="#55ffff" stroke-width="2"/>
+          <polygon points="16,6 24,11 24,21 16,26 8,21 8,11" fill="none" stroke="#ffff55" stroke-width="2"/>
+          <circle cx="16" cy="16" r="3" fill="#ffffff"/>
+          <!-- Interlocking laser circuits -->
+          <line x1="16" y1="0" x2="16" y2="-12" stroke="#55ffff" stroke-width="2"/>
+          <line x1="30" y1="8" x2="40" y2="2" stroke="#55ffff" stroke-width="2"/>
+          <line x1="30" y1="24" x2="42" y2="30" stroke="#ffff55" stroke-width="2"/>
+        </g>
+
+        <!-- PIXEL PATCH: Glitch Repair Patch Matrix -->
+        <g transform="translate(10, 72)">
+          <rect x="0" y="0" width="44" height="44" fill="#000000" stroke="#00aaaa" stroke-width="2"/>
+          <!-- Corrupted & repaired tiles -->
+          <rect x="4" y="4" width="8" height="8" fill="#55ff55"/>
+          <rect x="14" y="4" width="8" height="8" fill="#55ff55"/>
+          <rect x="24" y="4" width="8" height="8" fill="#ff55ff"/>
+          <rect x="32" y="4" width="8" height="8" fill="#555555"/>
+
+          <rect x="4" y="14" width="8" height="8" fill="#55ff55"/>
+          <rect x="14" y="14" width="8" height="8" fill="#ffff55"/>
+          <rect x="24" y="14" width="8" height="8" fill="#ff5555"/>
+          <rect x="32" y="14" width="8" height="8" fill="#00aaaa"/>
+
+          <rect x="4" y="24" width="8" height="8" fill="#00aaaa"/>
+          <rect x="14" y="24" width="8" height="8" fill="#ff55ff"/>
+          <rect x="24" y="24" width="8" height="8" fill="#55ff55"/>
+          <rect x="32" y="24" width="8" height="8" fill="#55ff55"/>
+
+          <!-- Animated Repair Crosshair -->
+          <g transform="translate(14, 14)">
+            <rect x="0" y="0" width="8" height="8" fill="none" stroke="#ffffff" stroke-width="2">
+              <animate attributeName="stroke" values="#ffffff;#55ffff;#ffffff" dur="0.8s" repeatCount="indefinite"/>
+            </rect>
+          </g>
+        </g>
+      </g>
+
+      <!-- ============================================================ -->
+      <!-- GAME 6: FIZZ-PONG: CARBONATION WAR (Paddles & Plasma Ball)   -->
+      <!-- ============================================================ -->
+      <g transform="translate(828, 34)">
+        <!-- Arena dashed net -->
+        <line x1="42" y1="0" x2="42" y2="76" stroke="#555555" stroke-dasharray="4,4" stroke-width="2"/>
+
+        <!-- Left Paddle (Cyan) moving vertically -->
+        <g>
+          <animateTransform attributeName="transform" type="translate" values="0,10; 0,40; 0,10" dur="2.4s" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" repeatCount="indefinite"/>
+          <rect x="4" y="0" width="6" height="24" fill="#55ffff" stroke="#00aaaa" stroke-width="1"/>
+        </g>
+
+        <!-- Right Paddle (Red) moving vertically -->
+        <g>
+          <animateTransform attributeName="transform" type="translate" values="0,36; 0,6; 0,36" dur="2.4s" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" repeatCount="indefinite"/>
+          <rect x="74" y="0" width="6" height="24" fill="#ff5555" stroke="#aa0000" stroke-width="1"/>
+        </g>
+
+        <!-- Bouncing Carbonation Plasma Ball -->
+        <g>
+          <animateTransform attributeName="transform" type="translate" values="12,22; 72,18; 12,46; 72,30; 12,22" dur="2.4s" repeatCount="indefinite"/>
+          <!-- Glow halo -->
+          <circle cx="0" cy="0" r="5" fill="#ffff55"/>
+          <circle cx="0" cy="0" r="3" fill="#ffffff"/>
+        </g>
+      </g>
+
+      <!-- ============================================================ -->
+      <!-- GAME 7: BEN BLAZE ON POGO STICK (Pogo Panic & Fizz Hero!)    -->
+      <!-- ============================================================ -->
+      <g>
+        <!-- Vertical ballistic bouncing animation with spring squash -->
+        <animateTransform attributeName="transform" type="translate" values="0,0; 0,-62; 0,0" dur="1.4s" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.2 0.7 0.3 1;0.7 0 0.8 0.3" repeatCount="indefinite"/>
+
+        <!-- Ben Blaze character assembly (scale 2.6) -->
+        <g transform="translate(762, 134) scale(2.6)">
+          <!-- Helmet Top & Crest (Green #55ff55 / #00aa00) -->
+          <rect x="4" y="0" width="8" height="2" fill="#55ff55"/>
+          <rect x="7" y="0" width="2" height="2" fill="#ffffff"/>
+          <!-- Radio Antenna & Blinking Beacon -->
+          <rect x="11" y="-3" width="1" height="3" fill="#aaaaaa"/>
+          <rect x="10" y="-5" width="3" height="2" fill="#ff5555">
+            <animate attributeName="fill" values="#ff5555;#ffff55;#ff5555" dur="0.7s" repeatCount="indefinite"/>
+          </rect>
+
+          <!-- Visor / Face -->
+          <rect x="3" y="2" width="10" height="2" fill="#00aa00"/>
+          <rect x="3" y="4" width="10" height="4" fill="#ffffff"/>
+          <!-- Visor reflection & eyes -->
+          <rect x="7" y="4" width="5" height="3" fill="#55ffff"/>
+          <rect x="9" y="5" width="2" height="2" fill="#0000aa"/>
+
+          <!-- Red Flight Shirt & Holster -->
+          <rect x="4" y="8" width="8" height="6" fill="#ff5555"/>
+          <rect x="4" y="11" width="8" height="3" fill="#aa0000"/>
+          <rect x="12" y="9" width="2" height="4" fill="#ffff55"/>
+
+          <!-- Blue Trousers & Boots -->
+          <rect x="5" y="14" width="6" height="5" fill="#5555ff"/>
+          <rect x="5" y="17" width="6" height="2" fill="#0000aa"/>
+          <rect x="4" y="19" width="3" height="2" fill="#555555"/>
+          <rect x="9" y="19" width="3" height="2" fill="#555555"/>
+
+          <!-- Chrome Pogo Stick: Shaft, Footpegs, Coil Spring -->
+          <rect x="7" y="18" width="2" height="16" fill="#ffffff"/>
+          <rect x="8" y="18" width="1" height="16" fill="#aaaaaa"/>
+          <!-- Footpegs -->
+          <rect x="3" y="21" width="10" height="2" fill="#555555"/>
+          <!-- Coil Spring -->
+          <rect x="6" y="32" width="4" height="2" fill="#aaaaaa"/>
+          <rect x="7" y="34" width="2" height="2" fill="#555555"/>
+          <rect x="6" y="36" width="4" height="2" fill="#aaaaaa"/>
+          <!-- Rubber tip -->
+          <rect x="6" y="38" width="4" height="2" fill="#000000"/>
+        </g>
+      </g>
+
+      <!-- Ground landing impact sparks beneath Ben -->
+      <g transform="translate(778, 234)">
+        <animate attributeName="opacity" values="1;0;0;1" keyTimes="0;0.2;0.8;1" dur="1.4s" repeatCount="indefinite"/>
+        <rect x="-12" y="0" width="6" height="2" fill="#ffff55"/>
+        <rect x="10" y="0" width="6" height="2" fill="#ffff55"/>
+        <rect x="-8" y="-3" width="3" height="3" fill="#ff5555"/>
+        <rect x="8" y="-3" width="3" height="3" fill="#ff5555"/>
+      </g>
+
+      <!-- Rising Cream Soda Carbonation Bubbles -->
+      <g>
+        <circle cx="770" cy="180" r="5" fill="#ff55ff">
+          <animateMotion dur="2.1s" repeatCount="indefinite" path="M0,0 L-40,-120"/>
+          <animate attributeName="opacity" values="0.9;0" dur="2.1s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="795" cy="190" r="4" fill="#55ffff">
+          <animateMotion dur="2.4s" begin="0.4s" repeatCount="indefinite" path="M0,0 L-20,-130"/>
+          <animate attributeName="opacity" values="0.9;0" dur="2.4s" begin="0.4s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="815" cy="175" r="6" fill="#ffff55">
+          <animateMotion dur="2.6s" begin="0.8s" repeatCount="indefinite" path="M0,0 L15,-125"/>
+          <animate attributeName="opacity" values="0.8;0" dur="2.6s" begin="0.8s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="780" cy="165" r="3" fill="#ffffff">
+          <animateMotion dur="1.8s" begin="1.2s" repeatCount="indefinite" path="M0,0 L-10,-110"/>
+          <animate attributeName="opacity" values="1;0" dur="1.8s" begin="1.2s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+
+      <!-- ============================================================ -->
+      <!-- GAME 8: MAGNET MAYHEM (Horseshoe magnet & flux lines)         -->
+      <!-- ============================================================ -->
+      <g transform="translate(922, 34)">
+        <!-- Horseshoe Magnet -->
+        <!-- Curved Base -->
+        <path d="M12,12 C12,0 36,0 36,12" fill="none" stroke="#555555" stroke-width="8"/>
+        <!-- North Pole (Red +) -->
+        <rect x="8" y="12" width="8" height="16" fill="#ff5555"/>
+        <text x="10" y="24" font-size="8" fill="#ffffff">+</text>
+        <!-- South Pole (Blue −) -->
+        <rect x="32" y="12" width="8" height="16" fill="#5555ff"/>
+        <text x="34" y="24" font-size="8" fill="#ffffff">−</text>
+
+        <!-- Magnetic Field Flux Lines (Dithered cyan) -->
+        <ellipse cx="24" cy="24" rx="20" ry="12" fill="none" stroke="url(#dither-cyan)" stroke-width="2"/>
+        <ellipse cx="24" cy="24" rx="28" ry="18" fill="none" stroke="url(#dither-cyan)" stroke-width="2"/>
+
+        <!-- Attracted metallic soda cap floating -->
+        <g transform="translate(18, 38)">
+          <circle cx="6" cy="6" r="6" fill="#aaaaaa" stroke="#ffffff" stroke-width="1"/>
+          <circle cx="6" cy="6" r="3" fill="#ffff55"/>
+        </g>
+      </g>
+
+      <!-- ============================================================ -->
+      <!-- GAME 9: CRYSTAL DEFENDER (360 Inertia ship & asteroid)       -->
+      <!-- ============================================================ -->
+      <g transform="translate(994, 114)">
+        <!-- Defender Ship with Thruster -->
+        <g transform="translate(0, 20)">
+          <!-- Thruster fire flame -->
+          <polygon points="-8,7 -2,5 -2,9" fill="#ffff55">
+            <animate attributeName="points" values="-8,7 -2,5 -2,9; -14,7 -2,4 -2,10; -8,7 -2,5 -2,9" dur="0.3s" repeatCount="indefinite"/>
+          </polygon>
+          <!-- Ship Hull (White with Cyan trim) -->
+          <polygon points="16,7 -2,0 2,7 -2,14" fill="#ffffff" stroke="#00aaaa" stroke-width="1"/>
+          <circle cx="5" cy="7" r="2" fill="#55ffff"/>
+          <!-- Dual laser pulse fire -->
+          <line x1="18" y1="7" x2="38" y2="7" stroke="#55ffff" stroke-width="2"/>
+        </g>
+
+        <!-- Shattering Crystal Asteroid -->
+        <g transform="translate(48, 16)">
+          <polygon points="12,0 22,6 20,20 8,22 0,12" fill="#55ffff" stroke="#0000aa" stroke-width="2"/>
+          <polygon points="12,4 18,8 16,16 8,16" fill="#ffffff"/>
+          <!-- Crystal fragments -->
+          <polygon points="26,2 30,5 28,10" fill="#55ffff"/>
+          <polygon points="24,24 28,27 25,30" fill="#55ffff"/>
+        </g>
+
+        <!-- Cave Bat silhouette in background -->
+        <path d="M30,0 L36,-6 L42,0 L38,3 L36,1 L34,3 Z" fill="#aa00aa"/>
+      </g>
+
+      <!-- ============================================================ -->
+      <!-- GAME 10: GLOOP SLUGGER (Crater & Popping Gloop Slug)          -->
+      <!-- ============================================================ -->
+      <g transform="translate(915, 232)">
+        <!-- Impact Crater Hole -->
+        <ellipse cx="32" cy="18" rx="30" ry="10" fill="#000000" stroke="#aa5500" stroke-width="3"/>
+        <ellipse cx="32" cy="18" rx="24" ry="7" fill="#000000"/>
+
+        <!-- Popping Gloop Slug -->
+        <g>
+          <animateTransform attributeName="transform" type="translate" values="0,18; 0,-16; 0,-16; 0,18" keyTimes="0; 0.25; 0.75; 1" dur="2.8s" repeatCount="indefinite"/>
+          <!-- Slime slug body -->
+          <path d="M16,18 C16,2 48,2 48,18 Z" fill="#55ff55" stroke="#00aa00" stroke-width="2"/>
+          <!-- Eyes & goofy expression -->
+          <circle cx="24" cy="8" r="4" fill="#ffffff"/>
+          <circle cx="25" cy="8" r="2" fill="#000000"/>
+          <circle cx="40" cy="8" r="4" fill="#ffffff"/>
+          <circle cx="41" cy="8" r="2" fill="#000000"/>
+          <!-- Slug antenna with yellow bulb -->
+          <line x1="32" y1="4" x2="32" y2="-2" stroke="#00aa00" stroke-width="2"/>
+          <circle cx="32" cy="-3" r="2" fill="#ffff55"/>
+        </g>
+
+        <!-- Reflex Mallet Whack Burst -->
+        <g transform="translate(48, -4)">
+          <animate attributeName="opacity" values="0;1;0" dur="2.8s" keyTimes="0;0.5;1" repeatCount="indefinite"/>
+          <text x="0" y="0" font-size="10" fill="#ffff55" letter-spacing="1">POW!</text>
+        </g>
+      </g>
+
+      <!-- ============================================================ -->
+      <!-- GAME 11: ZARG SAUCER WITH DITHER TRACTOR BEAM               -->
+      <!-- ============================================================ -->
+      <g transform="translate(1048, 16)">
+        <g>
+          <animateTransform attributeName="transform" type="translate" values="0,0; 0,-8; 0,0" dur="3s" repeatCount="indefinite"/>
+
+          <!-- 50% Dither Cyan Tractor Beam -->
+          <polygon points="46,58 94,58 126,220 14,220" fill="url(#dither-cyan)"/>
+
+          <!-- Abducted Cocoa Snack lifted in tractor beam -->
+          <g transform="translate(62, 190)">
+            <animateMotion dur="2.4s" repeatCount="indefinite" path="M0,0 L0,-115"/>
+            <animate attributeName="opacity" values="1;1;0" dur="2.4s" repeatCount="indefinite"/>
+            <!-- Giant cocoa bean snack -->
+            <ellipse cx="8" cy="6" rx="10" ry="7" fill="#aa5500" stroke="#ffff55" stroke-width="1.5"/>
+            <line x1="2" y1="6" x2="14" y2="6" stroke="#555555" stroke-width="1"/>
+          </g>
+
+          <!-- Saucer Cockpit Dome (Translucent cyan with alien pilot inside) -->
+          <path d="M50,42 L58,22 L82,22 L90,42 Z" fill="#55ffff" stroke="#00aaaa" stroke-width="2"/>
+          <!-- Alien pilot silhouette -->
+          <circle cx="70" cy="30" r="4" fill="#000000"/>
+          <circle cx="68" cy="29" r="1" fill="#55ff55"/>
+          <circle cx="72" cy="29" r="1" fill="#55ff55"/>
+
+          <!-- Saucer Hull (Magenta armour plates) -->
+          <path d="M22,46 L44,36 L96,36 L118,46 L108,58 L32,58 Z" fill="#aa00aa" stroke="#000000" stroke-width="2"/>
+          <path d="M44,36 L96,36 L118,46 L22,46 Z" fill="#ff55ff"/>
+
+          <!-- Cycling Running Lights -->
+          <g>
+            <rect x="36" y="50" width="6" height="5" fill="#ffff55"/>
+            <rect x="52" y="52" width="6" height="5" fill="#55ff55"/>
+            <rect x="68" y="52" width="6" height="5" fill="#ffff55"/>
+            <rect x="84" y="52" width="6" height="5" fill="#55ff55"/>
+            <rect x="98" y="50" width="6" height="5" fill="#ffff55"/>
+          </g>
+        </g>
+      </g>
+
+      <!-- ============================================================ -->
+      <!-- GAME 12: GUMDROP PAC-MAN (Mildred's Phantom & Gumdrop dots)  -->
+      <!-- ============================================================ -->
+      <g transform="translate(1054, 246)">
+        <!-- Gumdrop Snack Pellets along the ground -->
+        <circle cx="6" cy="14" r="3" fill="#ffff55"/>
+        <circle cx="18" cy="14" r="3" fill="#ff55ff"/>
+        <circle cx="30" cy="14" r="3" fill="#ffff55"/>
+
+        <!-- Retro Maze Phantom Ghost (Red Blinky style) -->
+        <g transform="translate(42, 0)">
+          <!-- Ghost body -->
+          <path d="M2,24 L2,10 C2,2 20,2 20,10 L20,24 L16,20 L12,24 L8,20 L4,24 Z" fill="#ff5555"/>
+          <!-- Expressive Eyes looking towards the snacks -->
+          <circle cx="7" cy="9" r="3" fill="#ffffff"/>
+          <circle cx="6" cy="9" r="1.5" fill="#0000aa"/>
+          <circle cx="15" cy="9" r="3" fill="#ffffff"/>
+          <circle cx="14" cy="9" r="1.5" fill="#0000aa"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

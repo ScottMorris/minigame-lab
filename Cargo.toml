@@ -9,6 +9,7 @@ members = [
   "crates/pogo-panic",
   "crates/gumdrop-pacman",
   "crates/crystal-defender",
+  "crates/fizz-pong",
 ]
 resolver = "2"
 

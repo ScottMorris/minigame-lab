@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/licence-Apache--2.0%20OR%20MIT-3fb950" alt="Licence: Apache-2.0 OR MIT">
 </p>
 
-*Mini Game Lab* is a suite of six bite-sized retro arcade proofs of concept built on the [Lieutenant Fizz 2](https://github.com/ScottMorris/lieutenant-fizz-2) simulation engine. Each mini-game isolates and explores distinct mechanics—continuous ballistic pogo jumping, vertical falling-block puzzles, fixed-screen wave shooting, grid reflex action, maze navigation, and 360° inertia flight—powered by deterministic fixed-tick Rust physics and presented in crisp retro Canvas 2D with sound from [Undertone](https://github.com/liminal-hq/undertone).
+*Mini Game Lab* is a suite of bite-sized retro arcade proofs of concept built on the [Lieutenant Fizz 2](https://github.com/ScottMorris/lieutenant-fizz-2) simulation engine. Each mini-game isolates and explores distinct mechanics—continuous ballistic pogo jumping, vertical falling-block puzzles, fixed-screen wave shooting, grid reflex action, maze navigation, 360° inertia flight, and pressurized paddle battles—powered by deterministic fixed-tick Rust physics and presented in crisp retro Canvas 2D with sound from [Undertone](https://github.com/liminal-hq/undertone).
 
 The lab is organised as a multi-game monorepo featuring a central Hub launcher and six independent game environments, with automated deployment to GitHub Pages.
 
@@ -44,6 +44,9 @@ A top-down maze chaser set within Mildred’s Citadel. Guide Ben through geometr
 
 ### 6. Crystal Defender
 An omnidirectional 360° survival shooter in the style of Asteroids. Floating weightless in the Crystal Caves, Ben rotates and applies thruster bursts to navigate treacherous zero-gravity caverns, firing bubbles to shatter incoming bats and crystalline boulders into smaller fragments. Detailed design in [`docs/specs/CRYSTAL_DEFENDER.md`](docs/specs/CRYSTAL_DEFENDER.md).
+
+### 7. Fizz-Pong: Carbonation War
+A pressurized soda-tank paddle battle paying tribute to Commander Keen’s wristwatch Paddle War. Ben slides along the bottom baseline to return a lively plasma orb against a tracking Zarg drone. Rising carbonation bubble currents deflect ball trajectories across the fluid, and sustained 5-hit rallies spawn Fizz Bubbles for multiball chaos. Detailed design in [`docs/specs/FIZZ_PONG.md`](docs/specs/FIZZ_PONG.md).
 
 ## Engine Architecture
 

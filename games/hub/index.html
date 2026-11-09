@@ -32,6 +32,16 @@
         max-width: 840px;
         margin: 0 auto 2.5rem;
       }
+      .hero-banner {
+        max-width: 100%;
+        height: auto;
+        border-radius: 12px;
+        border: 2px solid var(--card-border);
+        box-shadow:
+          0 12px 36px rgba(0, 0, 0, 0.6),
+          0 0 24px rgba(244, 63, 94, 0.2);
+        margin-bottom: 1.5rem;
+      }
       h1 {
         color: #fff;
         font-size: 2.5rem;
@@ -77,9 +87,25 @@
         border-color: var(--accent);
         box-shadow: 0 8px 24px rgba(255, 170, 64, 0.2);
       }
+      .card-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 0.75rem;
+      }
+      .card-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 8px;
+        border: 2px solid var(--card-border);
+        background: #000000;
+        image-rendering: pixelated;
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      }
       .card h2 {
         font-size: 1.3rem;
-        margin: 0 0 0.5rem;
+        margin: 0.2rem 0 0;
         color: #ffffff;
       }
       .card .badge {
@@ -91,7 +117,7 @@
         border-radius: 4px;
         background: #2a223d;
         color: var(--fizz);
-        margin-bottom: 0.75rem;
+        margin-bottom: 0;
         font-weight: bold;
       }
       .card p {
@@ -137,6 +163,7 @@
   </head>
   <body>
     <header>
+      <img src="./hero.svg" alt="Mini Game Lab — Lieutenant Fizz 2" class="hero-banner" />
       <h1>MINI GAME LAB</h1>
       <p class="tagline">Arcade experiments on the Lieutenant Fizz 2 engine</p>
       <p class="subtext">
@@ -147,70 +174,103 @@
 
     <div class="grid">
       <div class="card">
-        <div>
-          <span class="badge">Shooter</span>
-          <h2>Fizz Invaders</h2>
-          <p>
-            Defend Planet Zargoth from waves of descending Zarg ships using your cream soda bubble
-            blaster.
-          </p>
+        <div class="card-header">
+          <img src="./icons/fizz-invaders.svg" alt="Fizz Invaders icon" class="card-icon" />
+          <div>
+            <span class="badge">Shooter</span>
+            <h2>Fizz Invaders</h2>
+          </div>
         </div>
+        <p>
+          Defend Planet Zargoth from waves of descending Zarg ships using your cream soda bubble
+          blaster.
+        </p>
         <a href="./games/fizz-invaders/" class="play-btn">Play Game →</a>
       </div>
 
       <div class="card">
-        <div>
-          <span class="badge">Puzzle</span>
-          <h2>Cocoa Drop</h2>
-          <p>
-            Match falling cocoa beans and crystals in columns before the chocolate well overflows.
-          </p>
+        <div class="card-header">
+          <img src="./icons/cocoa-drop.svg" alt="Cocoa Drop icon" class="card-icon" />
+          <div>
+            <span class="badge">Puzzle</span>
+            <h2>Cocoa Drop</h2>
+          </div>
         </div>
+        <p>
+          Match falling cocoa beans and crystals in columns before the chocolate well overflows.
+        </p>
         <a href="./games/cocoa-drop/" class="play-btn">Play Game →</a>
       </div>
 
       <div class="card">
-        <div>
-          <span class="badge">Platformer</span>
-          <h2>Pogo Panic</h2>
-          <p>
-            Bounce continuously upwards across crumbly chocolate platforms and evade crystal bats.
-          </p>
+        <div class="card-header">
+          <img src="./icons/pogo-panic.svg" alt="Pogo Panic icon" class="card-icon" />
+          <div>
+            <span class="badge">Platformer</span>
+            <h2>Pogo Panic</h2>
+          </div>
         </div>
+        <p>
+          Bounce continuously upwards across crumbly chocolate platforms and evade crystal bats.
+        </p>
         <a href="./games/pogo-panic/" class="play-btn">Play Game →</a>
       </div>
 
       <div class="card">
-        <div>
-          <span class="badge">Reflex</span>
-          <h2>Gloop Slugger</h2>
-          <p>
-            Whack gloop slugs as they pop out of Cocoa Field craters while dodging tricky Zarg
-            phantoms.
-          </p>
+        <div class="card-header">
+          <img src="./icons/gloop-slugger.svg" alt="Gloop Slugger icon" class="card-icon" />
+          <div>
+            <span class="badge">Reflex</span>
+            <h2>Gloop Slugger</h2>
+          </div>
         </div>
+        <p>
+          Whack gloop slugs as they pop out of Cocoa Field craters while dodging tricky Zarg
+          phantoms.
+        </p>
         <a href="./games/gloop-slugger/" class="play-btn">Play Game →</a>
       </div>
 
       <div class="card">
-        <div>
-          <span class="badge">Maze Chaser</span>
-          <h2>Gumdrop Pac-Man</h2>
-          <p>
-            Navigate Mildred's Citadel, collect snacks, and drink cream soda power-ups to stun
-            phantoms.
-          </p>
+        <div class="card-header">
+          <img src="./icons/gumdrop-pacman.svg" alt="Gumdrop Pac-Man icon" class="card-icon" />
+          <div>
+            <span class="badge">Maze Chaser</span>
+            <h2>Gumdrop Pac-Man</h2>
+          </div>
         </div>
+        <p>
+          Navigate Mildred's Citadel, collect snacks, and drink cream soda power-ups to stun
+          phantoms.
+        </p>
         <a href="./games/gumdrop-pacman/" class="play-btn">Play Game →</a>
       </div>
 
       <div class="card">
-        <div>
-          <span class="badge">360° Shooter</span>
-          <h2>Crystal Defender</h2>
-          <p>Thrust and blast space debris and bats in 360 degrees inside the Crystal Caves.</p>
+        <div class="card-header">
+          <img src="./icons/crystal-defender.svg" alt="Crystal Defender icon" class="card-icon" />
+          <div>
+            <span class="badge">360° Shooter</span>
+            <h2>Crystal Defender</h2>
+          </div>
         </div>
+        <p>Thrust and blast space debris and bats in 360 degrees inside the Crystal Caves.</p>
         <a href="./games/crystal-defender/" class="play-btn">Play Game →</a>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <img src="./icons/fizz-pong.svg" alt="Fizz-Pong icon" class="card-icon" />
+          <div>
+            <span class="badge">Paddle War</span>
+            <h2>Fizz-Pong</h2>
+          </div>
+        </div>
+        <p>
+          Deflect the plasma ball in a pressurized soda tank while rising carbonation bubbles bend
+          flight paths.
+        </p>
+        <a href="./games/fizz-pong/" class="play-btn">Play Game →</a>
       </div>
     </div>
 
