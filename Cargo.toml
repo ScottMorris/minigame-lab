@@ -12,6 +12,7 @@ members = [
   "crates/fizz-pong",
   "crates/defrag",
   "crates/soda-snake",
+  "crates/pixel-patch",
 ]
 resolver = "2"
 

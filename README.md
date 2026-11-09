@@ -54,6 +54,9 @@ An authentic MS-DOS 6.22 and Norton SpeedDisk disk defragmentation action-puzzle
 ### 9. Soda Snake: The Last Straw
 A fast-paced grid-chase survival game in the vein of QBasic Nibbles. Steer a flexible barber-pole striped soda straw through an automated bottling shaft, devouring golden Fizz Pellets while dynamic carbonation vents push you sideways. Features an emergency pressure brake to skip collision ticks. Detailed design in [`docs/specs/SODA_SNAKE.md`](docs/specs/SODA_SNAKE.md).
 
+### 10. Pixel Patch: Corruption Control
+A territory-recovery puzzle arcade homage inspired by Qix. Restore an 8×8 picture mosaic corrupted by spreading CP437 static glitches. Maneuver the repair crosshair and neutralize multiplying Source Cells before the corruption baseline breaches the diagnostic line. Detailed design in [`docs/specs/PIXEL_PATCH.md`](docs/specs/PIXEL_PATCH.md).
+
 ## Engine Architecture
 
 Mini Game Lab reuses the layered architecture and `no_std` determinism discipline established by [Lieutenant Fizz 2](https://github.com/ScottMorris/lieutenant-fizz-2):
