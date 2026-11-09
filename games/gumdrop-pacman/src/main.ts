@@ -128,7 +128,7 @@ interface Ghost {
   dirY: number;
   normalColour: string;
   frightened: boolean;
-  state: 'in_house' | 'leaving_house' | 'in_maze' | 'eaten';
+  state: 'in_house' | 'leaving_house' | 'in_maze' | 'eaten' | 'entering_house';
   leaveTimer: number;
   speed: number;
 }
@@ -649,18 +649,28 @@ class GumdropPacmanGame {
       const dy = doorY - g.y;
       const dist = Math.hypot(dx, dy);
 
-      if (dist < 5) {
-        // Entered doorway, move down inside house
+      if (dist <= 3.0) {
+        // Reached front door of starting box, enter the house
         g.x = doorX;
-        g.y += 1.5;
-        if (g.y >= 10.5 * TILE_SIZE) {
-          g.state = 'leaving_house';
-          g.frightened = false;
-        }
+        g.y = doorY;
+        g.state = 'entering_house';
       } else {
         // Flying eyeballs back to house
-        g.x += (dx / dist) * 2.6;
-        g.y += (dy / dist) * 2.6;
+        g.x += (dx / dist) * 2.8;
+        g.y += (dy / dist) * 2.8;
+      }
+      return;
+    }
+
+    if (g.state === 'entering_house') {
+      const doorX = 13.5 * TILE_SIZE;
+      const targetHouseY = 10.5 * TILE_SIZE;
+      g.x = doorX;
+      g.y += 1.5;
+      if (g.y >= targetHouseY) {
+        g.y = targetHouseY;
+        g.frightened = false;
+        g.state = 'leaving_house';
       }
       return;
     }
@@ -958,7 +968,7 @@ class GumdropPacmanGame {
     ctx.save();
     ctx.translate(g.x, g.y);
 
-    if (g.state === 'eaten') {
+    if (g.state === 'eaten' || g.state === 'entering_house') {
       // Disembodied floating eyeballs flying to pen
       ctx.fillStyle = EGA.white;
       ctx.fillRect(-5, -3, 4, 6);
