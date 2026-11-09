@@ -64,6 +64,7 @@ async function main() {
     { name: 'pogo-panic', path: '/games/pogo-panic/' },
     { name: 'fizz-pong', path: '/games/fizz-pong/' },
     { name: 'defrag', path: '/games/defrag/' },
+    { name: 'soda-snake', path: '/games/soda-snake/' },
   ];
 
   let errorsFound = 0;

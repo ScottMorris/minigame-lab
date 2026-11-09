@@ -51,6 +51,9 @@ A pressurized soda-tank paddle battle paying tribute to Commander Keen’s wrist
 ### 8. Defrag the Mainframe
 An authentic MS-DOS 6.22 and Norton SpeedDisk disk defragmentation action-puzzle. Navigate the magnetic Read/Write Head across an 80-column sector matrix to align colour-coded clusters, optimize drive cylinders, and zap the destructive Cluster-Worm back before sector integrity is lost. Features synthetic stepper motor seek audio. Detailed design in [`docs/specs/DEFRAG.md`](docs/specs/DEFRAG.md).
 
+### 9. Soda Snake: The Last Straw
+A fast-paced grid-chase survival game in the vein of QBasic Nibbles. Steer a flexible barber-pole striped soda straw through an automated bottling shaft, devouring golden Fizz Pellets while dynamic carbonation vents push you sideways. Features an emergency pressure brake to skip collision ticks. Detailed design in [`docs/specs/SODA_SNAKE.md`](docs/specs/SODA_SNAKE.md).
+
 ## Engine Architecture
 
 Mini Game Lab reuses the layered architecture and `no_std` determinism discipline established by [Lieutenant Fizz 2](https://github.com/ScottMorris/lieutenant-fizz-2):

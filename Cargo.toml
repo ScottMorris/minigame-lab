@@ -11,6 +11,7 @@ members = [
   "crates/crystal-defender",
   "crates/fizz-pong",
   "crates/defrag",
+  "crates/soda-snake",
 ]
 resolver = "2"
 
