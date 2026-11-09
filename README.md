@@ -57,6 +57,9 @@ A fast-paced grid-chase survival game in the vein of QBasic Nibbles. Steer a fle
 ### 10. Pixel Patch: Corruption Control
 A territory-recovery puzzle arcade homage inspired by Qix. Restore an 8×8 picture mosaic corrupted by spreading CP437 static glitches. Maneuver the repair crosshair and neutralize multiplying Source Cells before the corruption baseline breaches the diagnostic line. Detailed design in [`docs/specs/PIXEL_PATCH.md`](docs/specs/PIXEL_PATCH.md).
 
+### 11. Hex Lock: Access Denied
+A deduction puzzle arcade homage inspired by classic Mastermind and security terminal codebreakers. Crack the central vault's four-symbol hexadecimal passcode using diagnostic clue LEDs before the 6-attempt lockout or 75-second countdown timer expires. Detailed design in [`docs/specs/HEX_LOCK.md`](docs/specs/HEX_LOCK.md).
+
 ## Engine Architecture
 
 Mini Game Lab reuses the layered architecture and `no_std` determinism discipline established by [Lieutenant Fizz 2](https://github.com/ScottMorris/lieutenant-fizz-2):

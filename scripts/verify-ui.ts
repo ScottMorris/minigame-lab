@@ -66,6 +66,7 @@ async function main() {
     { name: 'defrag', path: '/games/defrag/' },
     { name: 'soda-snake', path: '/games/soda-snake/' },
     { name: 'pixel-patch', path: '/games/pixel-patch/' },
+    { name: 'hex-lock', path: '/games/hex-lock/' },
   ];
 
   let errorsFound = 0;

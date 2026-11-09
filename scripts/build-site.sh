@@ -13,7 +13,7 @@ bash scripts/build-wasm.sh
 echo "Building Hub..."
 bun run --cwd games/hub build
 
-for game in cocoa-drop crystal-defender fizz-invaders gloop-slugger gumdrop-pacman pogo-panic fizz-pong defrag soda-snake pixel-patch; do
+for game in cocoa-drop crystal-defender fizz-invaders gloop-slugger gumdrop-pacman pogo-panic fizz-pong defrag soda-snake pixel-patch hex-lock; do
   echo "Building $game..."
   bun run --cwd "games/$game" build
 done
@@ -24,7 +24,7 @@ mkdir -p dist/games
 
 cp -r games/hub/dist/* dist/
 
-for game in cocoa-drop crystal-defender fizz-invaders gloop-slugger gumdrop-pacman pogo-panic fizz-pong defrag soda-snake pixel-patch; do
+for game in cocoa-drop crystal-defender fizz-invaders gloop-slugger gumdrop-pacman pogo-panic fizz-pong defrag soda-snake pixel-patch hex-lock; do
   mkdir -p "dist/games/$game"
   cp -r "games/$game/dist/"* "dist/games/$game/"
 done

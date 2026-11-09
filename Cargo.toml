@@ -13,6 +13,7 @@ members = [
   "crates/defrag",
   "crates/soda-snake",
   "crates/pixel-patch",
+  "crates/hex-lock",
 ]
 resolver = "2"
 
