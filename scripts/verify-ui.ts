@@ -63,6 +63,7 @@ async function main() {
     { name: 'gumdrop-pacman', path: '/games/gumdrop-pacman/' },
     { name: 'pogo-panic', path: '/games/pogo-panic/' },
     { name: 'fizz-pong', path: '/games/fizz-pong/' },
+    { name: 'defrag', path: '/games/defrag/' },
   ];
 
   let errorsFound = 0;

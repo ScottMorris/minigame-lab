@@ -48,6 +48,9 @@ An omnidirectional 360° survival shooter in the style of Asteroids. Floating we
 ### 7. Fizz-Pong: Carbonation War
 A pressurized soda-tank paddle battle paying tribute to Commander Keen’s wristwatch Paddle War. Ben slides along the bottom baseline to return a lively plasma orb against a tracking Zarg drone. Rising carbonation bubble currents deflect ball trajectories across the fluid, and sustained 5-hit rallies spawn Fizz Bubbles for multiball chaos. Detailed design in [`docs/specs/FIZZ_PONG.md`](docs/specs/FIZZ_PONG.md).
 
+### 8. Defrag the Mainframe
+An authentic MS-DOS 6.22 and Norton SpeedDisk disk defragmentation action-puzzle. Navigate the magnetic Read/Write Head across an 80-column sector matrix to align colour-coded clusters, optimize drive cylinders, and zap the destructive Cluster-Worm back before sector integrity is lost. Features synthetic stepper motor seek audio. Detailed design in [`docs/specs/DEFRAG.md`](docs/specs/DEFRAG.md).
+
 ## Engine Architecture
 
 Mini Game Lab reuses the layered architecture and `no_std` determinism discipline established by [Lieutenant Fizz 2](https://github.com/ScottMorris/lieutenant-fizz-2):
