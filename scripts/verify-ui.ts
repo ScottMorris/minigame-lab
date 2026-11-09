@@ -67,6 +67,7 @@ async function main() {
     { name: 'soda-snake', path: '/games/soda-snake/' },
     { name: 'pixel-patch', path: '/games/pixel-patch/' },
     { name: 'hex-lock', path: '/games/hex-lock/' },
+    { name: 'magnet-mayhem', path: '/games/magnet-mayhem/' },
   ];
 
   let errorsFound = 0;

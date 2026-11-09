@@ -13,7 +13,7 @@
 
 *Mini Game Lab* is a suite of bite-sized retro arcade proofs of concept built on the [Lieutenant Fizz 2](https://github.com/ScottMorris/lieutenant-fizz-2) simulation engine. Each mini-game isolates and explores distinct mechanics—continuous ballistic pogo jumping, vertical falling-block puzzles, fixed-screen wave shooting, grid reflex action, maze navigation, 360° inertia flight, and pressurized paddle battles—powered by deterministic fixed-tick Rust physics and presented in crisp retro Canvas 2D with sound from [Undertone](https://github.com/liminal-hq/undertone).
 
-The lab is organised as a multi-game monorepo featuring a central Hub launcher and six independent game environments, with automated deployment to GitHub Pages.
+The lab is organised as a multi-game monorepo featuring a central Hub launcher and twelve independent game environments, with automated deployment to GitHub Pages.
 
 ## The Games
 
@@ -59,6 +59,9 @@ A territory-recovery puzzle arcade homage inspired by Qix. Restore an 8×8 pictu
 
 ### 11. Hex Lock: Access Denied
 A deduction puzzle arcade homage inspired by classic Mastermind and security terminal codebreakers. Crack the central vault's four-symbol hexadecimal passcode using diagnostic clue LEDs before the 6-attempt lockout or 75-second countdown timer expires. Detailed design in [`docs/specs/HEX_LOCK.md`](docs/specs/HEX_LOCK.md).
+
+### 12. Magnet Mayhem: Gantry 5
+A precision crane stacking arcade challenge. Manoeuvre an industrial electromagnetic crane along the loading shaft, timing drops to stack swinging cargo containers safely on the loading bay pad before the shift timer expires. Detailed design in [`docs/specs/MAGNET_MAYHEM.md`](docs/specs/MAGNET_MAYHEM.md).
 
 ## Engine Architecture
 
