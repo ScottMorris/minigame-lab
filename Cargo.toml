@@ -9,6 +9,12 @@ members = [
   "crates/pogo-panic",
   "crates/gumdrop-pacman",
   "crates/crystal-defender",
+  "crates/fizz-pong",
+  "crates/defrag",
+  "crates/soda-snake",
+  "crates/pixel-patch",
+  "crates/hex-lock",
+  "crates/magnet-mayhem",
 ]
 resolver = "2"
 

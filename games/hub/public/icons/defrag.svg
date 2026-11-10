@@ -1,0 +1,62 @@
+<!-- Arcade cartridge badge for Defrag the Mainframe in 16-colour EGA palette. -->
+<!-- -->
+<!-- (c) Copyright 2026 Liminal HQ, Scott Morris -->
+<!-- SPDX-License-Identifier: Apache-2.0 OR MIT -->
+<svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Defrag badge">
+  <!-- Bezel -->
+  <rect width="80" height="80" rx="10" fill="#000000" stroke="#5555ff" stroke-width="2"/>
+  <rect x="4" y="4" width="72" height="72" rx="8" fill="#000000" stroke="#0000aa" stroke-width="1"/>
+  <!-- Corner bolts -->
+  <rect x="6" y="6" width="2" height="2" fill="#ffffff"/>
+  <rect x="72" y="6" width="2" height="2" fill="#ffffff"/>
+  <rect x="6" y="72" width="2" height="2" fill="#ffffff"/>
+  <rect x="72" y="72" width="2" height="2" fill="#ffffff"/>
+
+  <!-- Terminal Title Strip -->
+  <rect x="8" y="10" width="64" height="7" fill="#0000aa"/>
+  <text x="40" y="16" font-family="monospace" font-weight="bold" font-size="6" fill="#55ffff" text-anchor="middle" letter-spacing="1">DEFRAG [C:]</text>
+
+  <!-- 5x4 Disk Cluster Matrix -->
+  <g transform="translate(13, 20)">
+    <!-- Row 0: green, green, red, green, grey -->
+    <rect x="0" y="0" width="9" height="7" fill="#55ff55"/>
+    <rect x="11" y="0" width="9" height="7" fill="#55ff55"/>
+    <rect x="22" y="0" width="9" height="7" fill="#ff5555"/>
+    <rect x="33" y="0" width="9" height="7" fill="#55ff55"/>
+    <rect x="44" y="0" width="9" height="7" fill="#555555"/>
+
+    <!-- Row 1: green, red, cyan, green, red -->
+    <rect x="0" y="9" width="9" height="7" fill="#55ff55"/>
+    <rect x="11" y="9" width="9" height="7" fill="#ff5555"/>
+    <rect x="22" y="9" width="9" height="7" fill="#55ffff"/>
+    <rect x="33" y="9" width="9" height="7" fill="#55ff55"/>
+    <rect x="44" y="9" width="9" height="7" fill="#ff5555"/>
+
+    <!-- Row 2: cyan, green, yellow, grey, grey -->
+    <rect x="0" y="18" width="9" height="7" fill="#55ffff"/>
+    <rect x="11" y="18" width="9" height="7" fill="#55ff55"/>
+    <rect x="22" y="18" width="9" height="7" fill="#ffff55"/>
+    <rect x="33" y="18" width="9" height="7" fill="#555555"/>
+    <rect x="44" y="18" width="9" height="7" fill="#555555"/>
+
+    <!-- Row 3: grey, grey, grey, grey, grey -->
+    <rect x="0" y="27" width="9" height="7" fill="#555555"/>
+    <rect x="11" y="27" width="9" height="7" fill="#555555"/>
+    <rect x="22" y="27" width="9" height="7" fill="#555555"/>
+    <rect x="33" y="27" width="9" height="7" fill="#555555"/>
+    <rect x="44" y="27" width="9" height="7" fill="#555555"/>
+  </g>
+
+  <!-- Cluster-worm chomping through sectors -->
+  <g transform="translate(13, 56)">
+    <rect x="0" y="0" width="6" height="5" fill="#ffff55"/>
+    <rect x="7" y="0" width="6" height="5" fill="#ff5555"/>
+    <rect x="14" y="0" width="6" height="5" fill="#ffff55"/>
+    <rect x="21" y="0" width="8" height="5" fill="#55ff55"/>
+    <rect x="26" y="1" width="2" height="2" fill="#000000"/>
+  </g>
+
+  <!-- Game title label -->
+  <rect x="18" y="64" width="44" height="10" fill="#000000" stroke="#5555ff" stroke-width="1"/>
+  <text x="40" y="72" font-family="monospace" font-weight="bold" font-size="7" fill="#55ffff" text-anchor="middle" letter-spacing="1">DEFRAG</text>
+</svg>

@@ -19,7 +19,7 @@
     "lint:rust": "cargo clippy --workspace --all-targets -- -D warnings",
     "format": "prettier --write . && cargo fmt --all",
     "format:check": "prettier --check . && cargo fmt --all -- --check",
-    "typecheck": "tsc -p games/hub --noEmit && tsc -p games/cocoa-drop --noEmit && tsc -p games/crystal-defender --noEmit && tsc -p games/fizz-invaders --noEmit && tsc -p games/gloop-slugger --noEmit && tsc -p games/gumdrop-pacman --noEmit && tsc -p games/pogo-panic --noEmit",
+    "typecheck": "tsc -p games/hub --noEmit && tsc -p games/cocoa-drop --noEmit && tsc -p games/crystal-defender --noEmit && tsc -p games/fizz-invaders --noEmit && tsc -p games/gloop-slugger --noEmit && tsc -p games/gumdrop-pacman --noEmit && tsc -p games/pogo-panic --noEmit && tsc -p games/fizz-pong --noEmit && tsc -p games/defrag --noEmit && tsc -p games/soda-snake --noEmit && tsc -p games/pixel-patch --noEmit && tsc -p games/hex-lock --noEmit && tsc -p games/magnet-mayhem --noEmit",
     "validate": "bun run format:check && bun run lint && bun run typecheck && bun run test && bun run lint:rust && bun run test:rust && bun run build"
   },
   "devDependencies": {

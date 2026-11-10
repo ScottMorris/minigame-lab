@@ -11,9 +11,9 @@
   <img src="https://img.shields.io/badge/licence-Apache--2.0%20OR%20MIT-3fb950" alt="Licence: Apache-2.0 OR MIT">
 </p>
 
-*Mini Game Lab* is a suite of six bite-sized retro arcade proofs of concept built on the [Lieutenant Fizz 2](https://github.com/ScottMorris/lieutenant-fizz-2) simulation engine. Each mini-game isolates and explores distinct mechanics—continuous ballistic pogo jumping, vertical falling-block puzzles, fixed-screen wave shooting, grid reflex action, maze navigation, and 360° inertia flight—powered by deterministic fixed-tick Rust physics and presented in crisp retro Canvas 2D with sound from [Undertone](https://github.com/liminal-hq/undertone).
+*Mini Game Lab* is a suite of bite-sized retro arcade proofs of concept built on the [Lieutenant Fizz 2](https://github.com/ScottMorris/lieutenant-fizz-2) simulation engine. Each mini-game isolates and explores distinct mechanics—continuous ballistic pogo jumping, vertical falling-block puzzles, fixed-screen wave shooting, grid reflex action, maze navigation, 360° inertia flight, and pressurized paddle battles—powered by deterministic fixed-tick Rust physics and presented in crisp retro Canvas 2D with sound from [Undertone](https://github.com/liminal-hq/undertone).
 
-The lab is organised as a multi-game monorepo featuring a central Hub launcher and six independent game environments, with automated deployment to GitHub Pages.
+The lab is organised as a multi-game monorepo featuring a central Hub launcher and twelve independent game environments, with automated deployment to GitHub Pages.
 
 ## The Games
 
@@ -44,6 +44,24 @@ A top-down maze chaser set within Mildred’s Citadel. Guide Ben through geometr
 
 ### 6. Crystal Defender
 An omnidirectional 360° survival shooter in the style of Asteroids. Floating weightless in the Crystal Caves, Ben rotates and applies thruster bursts to navigate treacherous zero-gravity caverns, firing bubbles to shatter incoming bats and crystalline boulders into smaller fragments. Detailed design in [`docs/specs/CRYSTAL_DEFENDER.md`](docs/specs/CRYSTAL_DEFENDER.md).
+
+### 7. Fizz-Pong: Carbonation War
+A pressurized soda-tank paddle battle paying tribute to Commander Keen’s wristwatch Paddle War. Ben slides along the bottom baseline to return a lively plasma orb against a tracking Zarg drone. Rising carbonation bubble currents deflect ball trajectories across the fluid, and sustained 5-hit rallies spawn Fizz Bubbles for multiball chaos. Detailed design in [`docs/specs/FIZZ_PONG.md`](docs/specs/FIZZ_PONG.md).
+
+### 8. Defrag the Mainframe
+An authentic MS-DOS 6.22 and Norton SpeedDisk disk defragmentation action-puzzle. Navigate the magnetic Read/Write Head across an 80-column sector matrix to align colour-coded clusters, optimize drive cylinders, and zap the destructive Cluster-Worm back before sector integrity is lost. Features synthetic stepper motor seek audio. Detailed design in [`docs/specs/DEFRAG.md`](docs/specs/DEFRAG.md).
+
+### 9. Soda Snake: The Last Straw
+A fast-paced grid-chase survival game in the vein of QBasic Nibbles. Steer a flexible barber-pole striped soda straw through an automated bottling shaft, devouring golden Fizz Pellets while dynamic carbonation vents push you sideways. Features an emergency pressure brake to skip collision ticks. Detailed design in [`docs/specs/SODA_SNAKE.md`](docs/specs/SODA_SNAKE.md).
+
+### 10. Pixel Patch: Corruption Control
+A territory-recovery puzzle arcade homage inspired by Qix. Restore an 8×8 picture mosaic corrupted by spreading CP437 static glitches. Maneuver the repair crosshair and neutralize multiplying Source Cells before the corruption baseline breaches the diagnostic line. Detailed design in [`docs/specs/PIXEL_PATCH.md`](docs/specs/PIXEL_PATCH.md).
+
+### 11. Hex Lock: Access Denied
+A deduction puzzle arcade homage inspired by classic Mastermind and security terminal codebreakers. Crack the central vault's four-symbol hexadecimal passcode using diagnostic clue LEDs before the 6-attempt lockout or 75-second countdown timer expires. Detailed design in [`docs/specs/HEX_LOCK.md`](docs/specs/HEX_LOCK.md).
+
+### 12. Magnet Mayhem: Gantry 5
+A precision crane stacking arcade challenge. Manoeuvre an industrial electromagnetic crane along the loading shaft, timing drops to stack swinging cargo containers safely on the loading bay pad before the shift timer expires. Detailed design in [`docs/specs/MAGNET_MAYHEM.md`](docs/specs/MAGNET_MAYHEM.md).
 
 ## Engine Architecture
 

@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pixel Patch: Corruption Control — Lieutenant Fizz 2</title>
+    <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #050409;
+        background-image:
+          radial-gradient(circle at 50% 30%, rgba(255, 85, 255, 0.1), transparent 60%),
+          linear-gradient(to bottom, #090714 0%, #030206 100%);
+        color: #f5efe9;
+        font-family: ui-monospace, 'Cascadia Mono', Menlo, Consolas, monospace;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        overflow-x: hidden;
+        user-select: none;
+      }
+      .cabinet {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: #14101e;
+        border: 4px solid #aa00aa;
+        border-radius: 12px;
+        box-shadow:
+          0 0 0 3px #ff55ff,
+          0 12px 36px rgba(0, 0, 0, 0.8),
+          0 0 24px rgba(255, 85, 255, 0.25);
+        padding: 16px 20px 20px 20px;
+        max-width: 95vw;
+      }
+      .marquee {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #1f0b24;
+        border: 2px solid #ff55ff;
+        border-radius: 6px;
+        padding: 6px 16px;
+        margin-bottom: 12px;
+        box-shadow: inset 0 0 12px rgba(255, 85, 255, 0.4);
+      }
+      .marquee h1 {
+        margin: 0;
+        font-size: 1.25rem;
+        letter-spacing: 2px;
+        color: #ff55ff;
+        text-shadow:
+          2px 2px 0 #aa00aa,
+          0 0 8px #ff55ff;
+      }
+      .marquee .sub {
+        font-size: 0.75rem;
+        color: #ffff55;
+        letter-spacing: 1px;
+      }
+      .crt-frame {
+        position: relative;
+        background: #000;
+        padding: 8px;
+        border: 3px solid #555555;
+        border-radius: 8px;
+        box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.9);
+      }
+      canvas {
+        display: block;
+        background: #000000;
+        image-rendering: pixelated;
+        image-rendering: crisp-edges;
+        border: 2px solid #331533;
+      }
+      .cabinet-footer {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+        font-size: 0.75rem;
+        color: #aaaaaa;
+      }
+      .controls-pill {
+        background: #1f0b24;
+        padding: 4px 10px;
+        border: 1px solid #555555;
+        border-radius: 4px;
+        color: #ffff55;
+      }
+      .hub-btn {
+        background: #aa00aa;
+        color: #ffffff;
+        text-decoration: none;
+        font-weight: bold;
+        padding: 4px 12px;
+        border-radius: 4px;
+        border: 1px solid #ff55ff;
+        transition:
+          background 0.15s ease,
+          transform 0.1s ease;
+      }
+      .hub-btn:hover {
+        background: #ff55ff;
+        color: #000000;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="cabinet">
+      <div class="marquee">
+        <div>
+          <h1>PIXEL PATCH</h1>
+          <div class="sub">CORRUPTION CONTROL</div>
+        </div>
+        <a href="../../" class="hub-btn">← Hub</a>
+      </div>
+
+      <div class="crt-frame">
+        <canvas id="game" width="480" height="360"></canvas>
+      </div>
+
+      <div class="cabinet-footer">
+        <div class="controls-pill">◄ ▲ ▼ ► Move Cursor · SPACE Patch Cell · P Pause</div>
+        <div style="color: #ff55ff; font-weight: bold">MOSAIC RECOVERY PROTOCOL</div>
+      </div>
+    </div>
+
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>

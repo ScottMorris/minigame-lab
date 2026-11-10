@@ -1,0 +1,18 @@
+{
+  "name": "magnet-mayhem-web",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build --base=./",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@liminal-hq/undertone": "0.3.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2",
+    "vite": "^5.2.0"
+  }
+}
